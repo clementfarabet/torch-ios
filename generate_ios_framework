@@ -1,0 +1,31 @@
+#!/usr/bin/env torch-lua
+
+print '==> building lua and 3rd party packages as static libs'
+os.execute[[
+   rm -f build/CMakeCache.txt;
+   mkdir -p build; 
+   cd build; 
+   cmake ..; 
+   make
+]]
+
+print '==> exporting libs + headers'
+os.execute[[
+   rm -r framework;
+   mkdir -p framework/lib;
+   mkdir -p framework/include;
+
+   cp build/exe/lua/libtorch-lua-static.a framework/lib;
+   cp build/extra/nn/libnn.a framework/lib;
+   cp build/lib/luaT/libluaT.a framework/lib;
+   cp build/lib/TH/libTH.a framework/lib;
+   cp build/pkg/torch/libtorch.a framework/lib;
+
+   path=`which torch-lua`
+   path=`dirname $path`
+   cp -r $path/../include/torch/* framework/include/;
+]]
+
+print '==> exported complete framework in framework/'
+print '    just drag the whole dir into your iOS project'
+
