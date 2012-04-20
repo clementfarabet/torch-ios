@@ -4,7 +4,7 @@ FIND_PACKAGE(Lua REQUIRED)
 
 INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
 
-ADD_LIBRARY(luaT SHARED luaT.h luaT.c)
+ADD_LIBRARY(luaT luaT.h luaT.c)
 TARGET_LINK_LIBRARIES(luaT ${LUA_LIBRARIES})
 
 INSTALL(TARGETS luaT
@@ -24,6 +24,3 @@ SET(LUAT_INCLUDE_DIR "${Torch_INSTALL_INCLUDE}")
 CONFIGURE_FILE(luaTConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/cmake-exports/luaTConfig.cmake")
 INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/cmake-exports/luaTConfig.cmake" 
   DESTINATION "${Torch_INSTALL_CMAKE_SUBDIR}")
-
-# luaT help
-ADD_TORCH_DOK(dok luat "Torch C Libraries" "luaT" 5.1)

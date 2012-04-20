@@ -93,18 +93,6 @@ MACRO(Check_Fortran_Libraries LIBRARIES _prefix _name _flags _list)
   endif(NOT _libraries_work)
 endmacro(Check_Fortran_Libraries)
 
-# Intel MKL?
-if((NOT BLAS_LIBRARIES)
-    AND ((NOT WITH_BLAS) OR (WITH_BLAS STREQUAL "mkl")))
-  FIND_PACKAGE(MKL)
-  IF(MKL_FOUND)
-    SET(BLAS_INFO "mkl")
-    SET(BLAS_LIBRARIES ${MKL_LIBRARIES})
-    SET(BLAS_INCLUDE_DIR ${MKL_INCLUDE_DIR})
-    SET(BLAS_VERSION ${MKL_VERSION})
-  ENDIF(MKL_FOUND)
-endif()
-
 if((NOT BLAS_LIBRARIES)
     AND ((NOT WITH_BLAS) OR (WITH_BLAS STREQUAL "open")))
   check_fortran_libraries(

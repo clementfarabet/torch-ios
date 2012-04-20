@@ -37,12 +37,6 @@ IF(DL_LIBRARY)
   SET(CMAKE_REQUIRED_LIBRARIES ${DL_LIBRARY})
 ENDIF(DL_LIBRARY)
 CHECK_FUNCTION_EXISTS(dlopen LUA_USE_DLOPEN)
-IF(NOT WIN32 AND NOT LUA_USE_DLOPEN)
-  MESSAGE(FATAL_ERROR "Cannot compile a useful lua.
-Function dlopen() seems not to be supported on your platform.
-Apparently you are not on a Windows platform as well.
-So lua has no way to deal with shared libraries!")
-ENDIF(NOT WIN32 AND NOT LUA_USE_DLOPEN)
 
 IF(WIN32)
   SET(LUA_BUILD_AS_DLL 1)
@@ -103,20 +97,8 @@ SET_TARGET_PROPERTIES(luac PROPERTIES
   COMPILE_DEFINITIONS "liblua_STATIC"
   LINKER_LANGUAGE CXX)
 
-# Compile shared library and regular lua executable
-ADD_LIBRARY(liblua-shared SHARED ${_lua_lib_src})
-SET_TARGET_PROPERTIES(liblua-shared PROPERTIES 
-  PREFIX "lib" IMPORT_PREFIX "lib"
-  OUTPUT_NAME "lua"
-  LINKER_LANGUAGE CXX)
-
-ADD_EXECUTABLE(lua ${_lua_src})
-TARGET_LINK_LIBRARIES(lua liblua-shared)
-SET_TARGET_PROPERTIES(lua PROPERTIES LINKER_LANGUAGE CXX)
-
 # Specify necessary libraries
 IF(LUA_USE_LIBM)
-  TARGET_LINK_LIBRARIES(liblua-shared m)
   TARGET_LINK_LIBRARIES(liblua-static m)
 ENDIF(LUA_USE_LIBM)
 
@@ -132,22 +114,10 @@ ELSE(LUA_USE_READLINE)
 ENDIF(LUA_USE_READLINE)
 
 IF(DL_LIBRARY)
-  TARGET_LINK_LIBRARIES(liblua-shared ${DL_LIBRARY})
   TARGET_LINK_LIBRARIES(liblua-static ${DL_LIBRARY})
 ENDIF(DL_LIBRARY)
 
-# Install files
-INSTALL(TARGETS liblua-shared lua luac
-  EXPORT torch-exports
-  RUNTIME DESTINATION "${Lua_INSTALL_BIN_SUBDIR}"
-  LIBRARY DESTINATION "${Lua_INSTALL_LIB_SUBDIR}"
-  ARCHIVE DESTINATION "${Lua_INSTALL_LIB_SUBDIR}")
-
-INSTALL(FILES src/lua.h src/lualib.h src/lauxlib.h  
-  DESTINATION "${Lua_INSTALL_INCLUDE_SUBDIR}")
-
 # Create internal FindLua.cmake
-SET(LUA_LIBRARIES liblua-shared)
 SET(LUA_EXECUTABLE lua-static)
 SET(LUAC_EXECUTABLE torch-luac)
 SET(LUA_INCLUDE_DIR 
