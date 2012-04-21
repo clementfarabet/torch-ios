@@ -1,7 +1,11 @@
 
--- We are using paths.require to appease mkl
-require "paths"
-paths.require "libtorch"
+-- override system functions
+require = function(lib) print('=> requiring ' .. lib) end
+
+-- create some dummy packages
+paths = {
+    require = require
+}
 
 --- package stuff
 function torch.packageLuaPath(name)
@@ -27,7 +31,7 @@ function torch.packageLuaPath(name)
 end
 
 function torch.include(package, file)
-   dofile(torch.packageLuaPath(package) .. '/' .. file) 
+   --dofile(torch.packageLuaPath(package) .. '/' .. file) 
 end
 
 function torch.class(tname, parenttname)

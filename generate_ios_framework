@@ -2,28 +2,38 @@
 
 print '==> building lua and 3rd party packages as static libs'
 os.execute[[
-   rm -f build/CMakeCache.txt;
-   mkdir -p build; 
-   cd build; 
-   cmake ..; 
+   rm -f build/CMakeCache.txt
+   mkdir -p build
+   cd build
+   cmake ..
    make
 ]]
 
 print '==> exporting libs + headers'
 os.execute[[
-   rm -r framework;
-   mkdir -p framework/lib;
-   mkdir -p framework/include;
+   mkdir -p framework/lib
+   mkdir -p framework/include
 
-   cp build/exe/lua/libtorch-lua-static.a framework/lib;
-   cp build/extra/nn/libnn.a framework/lib;
-   cp build/lib/luaT/libluaT.a framework/lib;
-   cp build/lib/TH/libTH.a framework/lib;
-   cp build/pkg/torch/libtorch.a framework/lib;
+   cp build/exe/lua/libtorch-lua-static.a framework/lib
+   cp build/extra/nn/libnn.a framework/lib
+   cp build/lib/luaT/libluaT.a framework/lib
+   cp build/lib/TH/libTH.a framework/lib
+   cp build/pkg/torch/libtorch.a framework/lib
 
    path=`which torch-lua`
    path=`dirname $path`
-   cp -r $path/../include/torch/* framework/include/;
+   cp -r $path/../include/torch/* framework/include/
+]]
+
+print '==> exporting Lua sources'
+os.execute[[
+   mkdir -p framework/lua
+
+   cp -r pkg/torch/*.lua framework/lua/
+   mv framework/lua/init.lua framework/lua/torch.lua
+
+   cp -r extra/nn/*.lua framework/lua/
+   mv framework/lua/init.lua framework/lua/nn.lua
 ]]
 
 print '==> exported complete framework in framework/'
