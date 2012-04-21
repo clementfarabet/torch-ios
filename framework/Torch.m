@@ -110,7 +110,60 @@
     [self require:@"MultiLabelMarginCriterion"];
     [self require:@"StochasticGradien"];
     [self require:@"Jacobian"];
-    
+
+    // load nnx
+    luaopen_libnnx(L);
+    [self require:@"nnx"];
+    [self require:@"ConfusionMatrix.lua"];
+    [self require:@"Logger.lua"];
+    [self require:@"Probe.lua"];
+    [self require:@"OmpModule.lua"];
+    [self require:@"Minus.lua"];
+    [self require:@"SpatialLinear.lua"];
+    [self require:@"SpatialClassifier.lua"];
+    [self require:@"SpatialPadding.lua"];
+    [self require:@"SpatialNormalization.lua"];
+    [self require:@"SpatialUpSampling.lua"];
+    [self require:@"SpatialDownSampling.lua"];
+    [self require:@"SpatialReSampling.lua"];
+    [self require:@"SpatialRecursiveFovea.lua"];
+    [self require:@"SpatialFovea.lua"];
+    [self require:@"SpatialPyramid.lua"];
+    [self require:@"SpatialGraph.lua"];
+    [self require:@"SpatialMatching.lua"];
+    [self require:@"SpatialMaxSampling.lua"];
+    [self require:@"SpatialColorTransform.lua"];
+    [self require:@"SpatialConvolutionSparse.lua"];
+    [self require:@"SuperCriterion.lua"];
+    [self require:@"SparseCriterion.lua"];
+    [self require:@"DistNLLCriterion.lua"];
+    [self require:@"KLDivCriterion.lua"];
+    [self require:@"DistMarginCriterion.lua"];
+    [self require:@"SpatialMSECriterion.lua"];
+    [self require:@"SpatialClassNLLCriterion.lua"];
+    [self require:@"SpatialSparseCriterion.lua"];
+    [self require:@"Optimization.lua"];
+    [self require:@"BatchOptimization.lua"];
+    [self require:@"SNESOptimization.lua"];
+    [self require:@"SGDOptimization.lua"];
+    [self require:@"ASGDOptimization.lua"];
+    [self require:@"LBFGSOptimization.lua"];
+    [self require:@"CGOptimization.lua"];
+    [self require:@"newCGOptimization.lua"];
+    [self require:@"GeneticSGDOptimization.lua"];
+    [self require:@"DiagHessian.lua"];
+    [self require:@"Trainer.lua"];
+    [self require:@"OnlineTrainer.lua"];
+    [self require:@"BatchTrainer.lua"];
+    [self require:@"Type.lua"];
+    [self require:@"DataSet.lua"];
+    [self require:@"DataList.lua"];
+    [self require:@"DataSetLabelMe.lua"];
+
+    // load image
+    luaopen_libimage(L);
+    [self require:@"image.lua"];
+
     // run user code
     [self require:@"main"];
     lua_getfield(L, LUA_GLOBALSINDEX, "initialize");
