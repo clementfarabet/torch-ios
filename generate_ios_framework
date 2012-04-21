@@ -35,6 +35,9 @@ os.execute[[
    cp -r pkg/torch/*.lua framework/lua/
    mv framework/lua/init.lua framework/lua/torch.lua
 
+   cp -r pkg/dok/*.lua framework/lua/
+   mv framework/lua/init.lua framework/lua/dok.lua
+
    cp -r extra/nn/*.lua framework/lua/
    mv framework/lua/init.lua framework/lua/nn.lua
 

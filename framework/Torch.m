@@ -27,6 +27,10 @@
     [self require:@"File"];
     [self require:@"CmdLine"];
     [self require:@"Tester"];
+
+    // load dok
+    [self require:@"dok.lua"];
+    [self require:@"inline.lua"];
     
     // load nn
     luaopen_libnn(L);
