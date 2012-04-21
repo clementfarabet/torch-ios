@@ -76,7 +76,7 @@ ADD_SUBDIRECTORY(pkg)
 ADD_SUBDIRECTORY(extra)
 
 # Torch extra packages
-ADD_SUBDIRECTORY(dev)
+ADD_SUBDIRECTORY(3rdparty)
 
 # External packages support
 INCLUDE(TorchExports)
