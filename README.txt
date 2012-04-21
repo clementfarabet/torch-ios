@@ -21,7 +21,8 @@ $ ./generate_ios_framework
 
 This will build all torch's libraries as static libs, and export them
 in a single dir: framework/. The dir is ready to be included in
-an iOS project.
+an iOS project: it includes an example class to load Torch from within
+your Objective C project.
 
 Note: the libs are built for the ARMv7 arch, and paths to the XCode
 frameworks are sort of hard coded in CMakeLists.txt, change them
@@ -29,34 +30,7 @@ if anything fails.
 
 Running
 =======
-In your XCode/iOS code (Objective C), simply include the headers:
-
-#import "lua.h"
-#import "luaT.h"
-#import "lualib.h"
-#import "lauxlib.h"
-
-and then define a function somewhere to initialize the Lua stack,
-and load some Lua script (any Lua file can be loaded included as a
-Resource in the XCode project):
-
-- (void) initLua{
-    // initialize Lua stack
-    lua_executable_dir("./lua");
-    lua_State *L = lua_open();
-    luaL_openlibs(L);
-    
-    // load some lua, from resources
-    NSString *mainpath = [[NSBundle mainBundle]
-    pathForResource:@"main" ofType:@"lua"];
-
-    // load code
-    luaL_dofile(L, [mainpath UTF8String]);
-
-    // run first function
-    lua_getfield(L, LUA_GLOBALSINDEX, "initialize");
-    lua_call(L, 0, 0);
-    
-    // done
-    return;
-}
+In your XCode/iOS code (Objective C), simply import the class
+Torch.m/.h; include all the libs to the linker; and finally
+add all the Lua files as resources. All you have left to do
+is to define a main.lua file to keep going...
