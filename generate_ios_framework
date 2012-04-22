@@ -19,9 +19,9 @@ os.execute[[
    cp build/lib/luaT/libluaT.a framework/lib/
    cp build/lib/TH/libTH.a framework/lib/
    cp build/pkg/torch/libtorch.a framework/lib/
-   cp build/dev/image/libimage.a framework/lib/
-   cp build/dev/nnx/liblbfgs.a framework/lib/
-   cp build/dev/nnx/libnnx.a framework/lib/
+   cp build/3rdparty/image/libimage.a framework/lib/
+   cp build/3rdparty/nnx/liblbfgs.a framework/lib/
+   cp build/3rdparty/nnx/libnnx.a framework/lib/
 
    path=`which torch-lua`
    path=`dirname $path`
@@ -41,10 +41,10 @@ os.execute[[
    cp -r extra/nn/*.lua framework/lua/
    mv framework/lua/init.lua framework/lua/nn.lua
 
-   cp -r dev/nnx/*.lua framework/lua/
+   cp -r 3rdparty/nnx/*.lua framework/lua/
    mv framework/lua/init.lua framework/lua/nnx.lua
 
-   cp -r dev/image/*.lua framework/lua/
+   cp -r 3rdparty/image/*.lua framework/lua/
    mv framework/lua/init.lua framework/lua/image.lua
 ]]
 
