@@ -402,7 +402,7 @@ function dok.unpack(args, funcname, description, ...)
                      return dok.usage(funcname, description, example, {tabled=defs})
                   end
    local usage = {}
-   setmetatable(usage, {__tostring=fusage})
+   --setmetatable(usage, {__tostring=fusage})
 
    -- get args
    local iargs = {}

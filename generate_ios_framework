@@ -22,6 +22,7 @@ os.execute[[
    cp build/3rdparty/image/libimage.a framework/lib/
    cp build/3rdparty/nnx/liblbfgs.a framework/lib/
    cp build/3rdparty/nnx/libnnx.a framework/lib/
+   cp build/3rdparty/opencv/libopencv.a framework/lib/
 
    path=`which torch-lua`
    path=`dirname $path`
@@ -46,6 +47,9 @@ os.execute[[
 
    cp -r 3rdparty/image/*.lua framework/lua/
    mv framework/lua/init.lua framework/lua/image.lua
+
+   cp -r 3rdparty/opencv/*.lua framework/lua/
+   mv framework/lua/init.lua framework/lua/opencv.lua
 ]]
 
 print '==> exported complete framework in framework/'
