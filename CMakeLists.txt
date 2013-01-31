@@ -3,7 +3,7 @@
 # support alternative targets
 MESSAGE(STATUS "Targetting ARM7 architecture")
 
-set(IPHONE_SDK "5.1")
+set(IPHONE_SDK "6.0")
 set(IPHONE_ROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer")
 set(IPHONE_SDK_ROOT "${IPHONE_ROOT}/SDKs/iPhoneOS${IPHONE_SDK}.sdk")
 
