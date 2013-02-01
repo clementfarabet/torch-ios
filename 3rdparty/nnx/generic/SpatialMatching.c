@@ -9,12 +9,12 @@
 static int nn_(SpatialMatching_updateOutput)(lua_State *L)
 {
   // get all params
-  THTensor *input1 = luaT_checkudata(L, 2, torch_(Tensor_id));
-  THTensor *input2 = luaT_checkudata(L, 3, torch_(Tensor_id));
+  THTensor *input1 = luaT_checkudata(L, 2, torch_Tensor);
+  THTensor *input2 = luaT_checkudata(L, 3, torch_Tensor);
   int maxw = luaT_getfieldcheckint(L, 1, "maxw");
   int maxh = luaT_getfieldcheckint(L, 1, "maxh");
   int full_output = luaT_getfieldcheckboolean(L, 1, "full_output");
-  THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_(Tensor_id));
+  THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_Tensor);
 
   // dims
   int iwidth = input1->size[2];
@@ -51,7 +51,7 @@ static int nn_(SpatialMatching_updateOutput)(lua_State *L)
 
     long dy, dx;
     
-    //#pragma omp parallel for private(x1,x2,y2,k,dist,dy,dx)
+    #pragma omp parallel for private(x1,x2,y2,k,dist,dy,dx)
     for (y1 = 0; y1 < iheight; y1++) {
       for (x1 = 0; x1 < iwidth; x1++) {
 	for (y2 = max(0,y1-halfh1); y2 < min(iheight,y1+halfh2); y2++) {
@@ -62,7 +62,7 @@ static int nn_(SpatialMatching_updateOutput)(lua_State *L)
 	    }
 	    dy = y2-y1 + halfh1;
 	    dx = x2-x1 + halfw1;
-	    output_p[dy*os[0] + dx*os[1] + y1*os[2] + x1*os[3]] = dist;
+	    output_p[dy*os[2] + dx*os[3] + y1*os[0] + x1*os[1]] = dist;
 	  }
 	}
       }
@@ -89,7 +89,7 @@ static int nn_(SpatialMatching_updateOutput)(lua_State *L)
     }
     */
   } else {
-    //#pragma omp parallel for private(x1,x2,y2,k,dist)
+#pragma omp parallel for private(y1,x1,x2,y2,k,dist)
     for (y1 = 0; y1 < iheight; y1++) {
       for (x1 = 0; x1 < iwidth; x1++) {
 	for (y2 = y1; y2 < y1+maxh; y2++) {
@@ -98,7 +98,7 @@ static int nn_(SpatialMatching_updateOutput)(lua_State *L)
 	    for (k = 0; k < ichannels; k++) {
 	      dist += square(input1_p[k*i1s[0] + y1*i1s[1] + x1*i1s[2]] - input2_p[k*i2s[0] + y2*i2s[1] + x2*i2s[2]]);
 	    }
-	    output_p[(y2-y1)*os[0] + (x2-x1)*os[1] + y1*os[2] + x1*os[3]] = dist;
+	    output_p[(y2-y1)*os[2] + (x2-x1)*os[3] + y1*os[0] + x1*os[1]] = dist;
 	  }
 	}
       }
@@ -113,11 +113,11 @@ static int nn_(SpatialMatching_updateOutput)(lua_State *L)
 static int nn_(SpatialMatching_updateGradInput)(lua_State *L)
 {
   // get all params
-  THTensor *input1 = luaT_checkudata(L, 2, torch_(Tensor_id));
-  THTensor *input2 = luaT_checkudata(L, 3, torch_(Tensor_id));
-  THTensor *gradInput1 = luaT_getfieldcheckudata(L, 1, "gradInput1", torch_(Tensor_id));
-  THTensor *gradInput2 = luaT_getfieldcheckudata(L, 1, "gradInput2", torch_(Tensor_id));
-  THTensor *gradOutput = luaT_checkudata(L, 4, torch_(Tensor_id));
+  THTensor *input1 = luaT_checkudata(L, 2, torch_Tensor);
+  THTensor *input2 = luaT_checkudata(L, 3, torch_Tensor);
+  THTensor *gradInput1 = luaT_getfieldcheckudata(L, 1, "gradInput1", torch_Tensor);
+  THTensor *gradInput2 = luaT_getfieldcheckudata(L, 1, "gradInput2", torch_Tensor);
+  THTensor *gradOutput = luaT_checkudata(L, 4, torch_Tensor);
   int full_output = luaT_getfieldcheckboolean(L, 1, "full_output");
   int maxw = luaT_getfieldcheckint(L, 1, "maxw");
   int maxh = luaT_getfieldcheckint(L, 1, "maxh");
@@ -161,7 +161,7 @@ static int nn_(SpatialMatching_updateGradInput)(lua_State *L)
 	    dx = x2-x1 + halfw1;
 	    for (k=0; k<ichannels; k++) {
 	      partial_d = 2*(input1_p[k*i1s[0] + y1*i1s[1] + x1*i1s[2]] - input2_p[k*i2s[0] + y2*i2s[1] + x2*i2s[2]]);
-	      partial_d *= gradOutput_p[dy*gos[0] + dx*gos[1] + y1*gos[2] + x1*gos[3]];
+	      partial_d *= gradOutput_p[dy*gos[2] + dx*gos[3] + y1*gos[0] + x1*gos[1]];
 	      gradInput1_p[k*gi1s[0] + y1*gi1s[1] + x1*gi1s[2]] += partial_d;
 	      gradInput2_p[k*gi2s[0] + y2*gi2s[1] + x2*gi2s[2]] -= partial_d;
 	    }
@@ -177,7 +177,7 @@ static int nn_(SpatialMatching_updateGradInput)(lua_State *L)
 	  for (x2 = x1; x2 < x1+maxw; x2++) {
 	    for (k = 0; k < ichannels; k++) {
 	      partial_d = 2*(input1_p[k*i1s[0] + y1*i1s[1] + x1*i1s[2]] - input2_p[k*i2s[0] + y2*i2s[1] + x2*i2s[2]]);
-	      partial_d *= gradOutput_p[(y2-y1)*gos[0]+(x2-x1)*gos[1]+y1*gos[2]+x1*gos[3]];
+	      partial_d *= gradOutput_p[(y2-y1)*gos[2]+(x2-x1)*gos[3]+y1*gos[0]+x1*gos[1]];
 	      gradInput1_p[k*gi1s[0] + y1*gi1s[1] + x1*gi1s[2]] += partial_d;
 	      gradInput2_p[k*gi2s[0] + y2*gi2s[1] + x2*gi2s[2]] -= partial_d;
 	      
@@ -200,7 +200,7 @@ static const struct luaL_Reg nn_(SpatialMatching__) [] = {
 
 static void nn_(SpatialMatching_init)(lua_State *L)
 {
-  luaT_pushmetaclass(L, torch_(Tensor_id));
+  luaT_pushmetatable(L, torch_Tensor);
   luaT_registeratname(L, nn_(SpatialMatching__), "nn");
   lua_pop(L,1);
 }

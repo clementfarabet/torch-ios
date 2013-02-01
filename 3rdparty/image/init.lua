@@ -29,26 +29,232 @@
 --     July  1, 2011, 7:42PM - import from Torch5 - Clement Farabet
 ----------------------------------------------------------------------
 
+require 'torch'
+require 'sys'
+require 'xlua'
+require 'dok'
+require 'libimage'
+
+----------------------------------------------------------------------
+-- types lookups
+-- 
+local type2tensor = {
+   float = torch.FloatTensor(),
+   double = torch.DoubleTensor(),
+   byte = torch.ByteTensor(),
+}
+local template = function(type)
+   if type then
+      return type2tensor[type]
+   else
+      return torch.Tensor()
+   end
+end
+
 ----------------------------------------------------------------------
 -- save/load in multiple formats
 --
-local function load(filename, depth)
+local function loadPNG(filename, depth, tensortype)
+   if not xlua.require 'libpng' then
+      dok.error('libpng package not found, please install libpng','image.loadPNG')
+   end
+   local MAXVAL = 255
+   local a = template(tensortype).libpng.load(filename)
+   if tensortype ~= 'byte' then
+      a:mul(1/MAXVAL)
+   end
+   if depth and depth == 1 then
+      if a:nDimension() == 2 then
+         -- all good
+      elseif a:size(1) == 3 or a:size(1) == 4 then
+         local b = a.new(a:size(2), a:size(3))
+         image.rgb2y(a:narrow(1,1,3),b)
+         a = b
+      elseif a:size(1) == 2 then
+         a = a:narrow(1,1,1)
+      elseif a:size(1) ~= 1 then
+         dok.error('image loaded has wrong #channels','image.loadPNG')
+      end
+   elseif depth and depth == 3 then
+      if a:size(1) == 3 then
+         -- all good
+      elseif a:size(1) == 4 then
+         a = a:narrow(1,1,3)
+      else
+         dok.error('image loaded has wrong #channels','image.loadPNG')
+      end
+   end
+   return a
+end
+rawset(image, 'loadPNG', loadPNG)
+
+local function savePNG(filename, tensor)
+   if not xlua.require 'libpng' then
+      dok.error('libpng package not found, please install libpng','image.savePNG')
+   end
+   local MAXVAL = 255
+   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
+   a.image.saturate(a) -- bound btwn 0 and 1
+   a:mul(MAXVAL)       -- remap to [0..255]
+   a.libpng.save(filename, a)
+end  
+rawset(image, 'savePNG', savePNG)
+
+function image.getPNGsize(filename)
+   if not xlua.require 'libpng' then
+      dok.error('libpng package not found, please install libpng','image.getPNGsize')
+   end
+   return torch.Tensor().libpng.size(filename)
+end
+
+local function loadJPG(filename, depth, tensortype)
+   if not xlua.require 'libjpeg' then
+      dok.error('libjpeg package not found, please install libjpeg','image.loadJPG')
+   end
+   local MAXVAL = 255
+   local a = template(tensortype).libjpeg.load(filename)
+   if tensortype ~= 'byte' then
+      a:mul(1/MAXVAL)
+   end
+   if depth and depth == 1 then
+      if a:nDimension() == 2 then
+         -- all good
+      elseif a:size(1) == 3 or a:size(1) == 4 then
+         local b = a.new(a:size(2), a:size(3))
+         image.rgb2y(a:narrow(1,1,3),b)
+         a = b
+      elseif a:size(1) == 2 then
+         a = a:narrow(1,1,1)
+      elseif a:size(1) ~= 1 then
+         dok.error('image loaded has wrong #channels','image.loadJPG')
+      end
+   elseif depth and depth == 3 then
+      if a:size(1) == 3 then
+         -- all good
+      elseif a:size(1) == 4 then
+         a = a:narrow(1,1,3)
+      else
+         dok.error('image loaded has wrong #channels','image.loadJPG')
+      end
+   end
+   return a
+end
+rawset(image, 'loadJPG', loadJPG)
+
+local function saveJPG(filename, tensor)
+   if not xlua.require 'libjpeg' then
+      dok.error('libjpeg package not found, please install libjpeg','image.saveJPG')
+   end
+   local MAXVAL = 255
+   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
+   a.image.saturate(a) -- bound btwn 0 and 1
+   a:mul(MAXVAL)       -- remap to [0..255]
+   a.libjpeg.save(filename, a)
+end
+rawset(image, 'saveJPG', saveJPG)
+
+function image.getJPGsize(filename)
+   if not xlua.require 'libjpeg' then
+      dok.error('libjpeg package not found, please install libjpeg','image.getJPGsize')
+   end
+   return torch.Tensor().libjpeg.size(filename)
+end
+
+local function loadPPM(filename, depth, tensortype)
+   require 'libppm'
+   local MAXVAL = 255
+   local a = template(tensortype).libppm.load(filename)
+   if tensortype ~= 'byte' then
+      a:mul(1/MAXVAL)
+   end
+   if depth and depth == 1 then
+      if a:nDimension() == 2 then
+         -- all good
+      elseif a:size(1) == 3 or a:size(1) == 4 then
+         local b = a.new(a:size(2), a:size(3))
+         image.rgb2y(a:narrow(1,1,3),b)
+         a = b
+      elseif a:size(1) == 2 then
+         a = a:narrow(1,1,1)
+      elseif a:size(1) ~= 1 then
+         dok.error('image loaded has wrong #channels','image.loadPPM')
+      end
+   elseif depth and depth == 3 then
+      if a:size(1) == 3 then
+         -- all good
+      elseif a:size(1) == 4 then
+         a = a:narrow(1,1,3)
+      else
+         dok.error('image loaded has wrong #channels','image.loadPPM')
+      end
+   end
+   return a
+end
+rawset(image, 'loadPPM', loadPPM)
+
+local function savePPM(filename, tensor)
+   require 'libppm'
+   if tensor:nDimension() ~= 3 or tensor:size(1) ~= 3 then
+      dok.error('can only save 3xHxW images as PPM', 'image.savePPM')
+   end
+   local MAXVAL = 255
+   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
+   a.image.saturate(a) -- bound btwn 0 and 1
+   a:mul(MAXVAL)       -- remap to [0..255]
+   a.libppm.save(filename, a)
+end
+rawset(image, 'savePPM', savePPM)
+
+local function savePGM(filename, tensor)
+   require 'libppm'
+   if tensor:nDimension() == 3 and tensor:size(1) ~= 1 then
+      dok.error('can only save 1xHxW or HxW images as PGM', 'image.savePGM')
+   end
+   local MAXVAL = 255
+   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
+   a.image.saturate(a) -- bound btwn 0 and 1
+   a:mul(MAXVAL)       -- remap to [0..255]
+   a.libppm.save(filename, a)
+end
+rawset(image, 'savePGM', savePGM)
+
+local filetypes = {
+   jpg = {loader = image.loadJPG, saver = image.saveJPG},
+   png = {loader = image.loadPNG, saver = image.savePNG},
+   ppm = {loader = image.loadPPM, saver = image.savePPM},
+   pgm = {loader = image.loadPGM, saver = image.savePGM}
+}
+
+filetypes['JPG']  = filetypes['jpg']
+filetypes['JPEG'] = filetypes['jpg']
+filetypes['jpeg'] = filetypes['jpg']
+filetypes['PNG']  = filetypes['png']
+filetypes['PPM']  = filetypes['ppm']
+filetypes['PGM']  = filetypes['pgm']
+rawset(image, 'supported_filetypes', filetypes)
+
+local function is_supported(suffix)
+   return filetypes[suffix] ~= nil
+end
+rawset(image, 'is_supported', is_supported)
+
+local function load(filename, depth, tensortype)
    if not filename then
       print(dok.usage('image.load',
                        'loads an image into a torch.Tensor', nil,
                        {type='string', help='path to file', req=true},
-                       {type='number', help='force destination depth: 1 | 3'}))
+                       {type='number', help='force destination depth: 1 | 3'},
+                       {type='string', help='type: byte | float | double'}))
       dok.error('missing file name', 'image.load')
    end
    local ext = string.match(filename,'%.(%a+)$')
    local tensor
-   if ext == 'jpg' or ext == 'JPG' then
-      tensor = image.loadJPG(filename,depth)
-   elseif ext == 'png' or ext == 'PNG' then
-      tensor = image.loadPNG(filename,depth)
+   if image.is_supported(ext) then
+      tensor = filetypes[ext].loader(filename, depth, tensortype)
    else
       dok.error('unknown image type: ' .. ext, 'image.load')
    end
+
    return tensor
 end
 rawset(image, 'load', load)
@@ -62,10 +268,8 @@ local function save(filename, tensor)
       dok.error('missing file name | tensor to save', 'image.save')
    end
    local ext = string.match(filename,'%.(%a+)$')
-   if ext == 'jpg' or ext == 'JPG' then
-      image.saveJPG(filename, tensor)
-   elseif ext == 'png' or ext == 'PNG' then
-      image.savePNG(filename, tensor)
+   if image.is_supported(ext) then
+      tensor = filetypes[ext].saver(filename, tensor)
    else
       dok.error('unknown image type: ' .. ext, 'image.save')
    end
@@ -121,10 +325,12 @@ local function crop(...)
       return src.image.cropNoScale(src,dst,startx,starty)
    else
       local depth=1
+      local x
       if src:nDimension() > 2 then
-         depth=src:size(1)
+         x = src.new(src:size(1),endy-starty,endx-startx)
+      else
+         x = src.new(endy-starty,endx-startx)
       end
-      local x = src.new(depth,endy-starty,endx-startx)
       src.image.cropNoScale(src,x,startx,starty)
       dst = dst or src.new():resizeAs(x)
       image.scale(x,dst)
@@ -161,7 +367,9 @@ local function translate(...)
                        {type='number', help='vertical translation', req=true}))
       dok.error('incorrect arguments', 'image.translate')
    end
-   dst = dst or src.new():resizeAs(src)
+   dst = dst or src.new()
+   dst:resizeAs(src)
+   dst:zero()
    src.image.translate(src,dst,x,y)
    return dst
 end
@@ -247,7 +455,8 @@ local function rotate(...)
                        {type='number', help='rotation angle (in radians)', req=true}))
       dok.error('incorrect arguments', 'image.rotate')
    end
-   dst = dst or src.new():resizeAs(src)
+   dst = dst or src.new()
+   dst:resizeAs(src)
    src.image.rotate(src,dst,theta)
    return dst  
 end
@@ -259,12 +468,26 @@ rawset(image, 'rotate', rotate)
 local function warp(...)
    local dst,src,field
    local mode = 'bilinear'
+   local offset_mode = true
    local args = {...}
-   if select('#',...) == 4 then
+   if select('#',...) == 5 then
       dst = args[1]
       src = args[2]
       field = args[3]
       mode = args[4]
+      offset_mode = args[5]
+   elseif select('#',...) == 4 then
+      if type(args[3]) == 'string' then
+    src = args[1]
+    field = args[2]
+         mode = args[3]
+    offset_mode = args[4]
+      else
+    dst = args[1]
+    src = args[2]
+    field = args[3]
+    mode = args[4]
+      end
    elseif select('#',...) == 3 then
       if type(args[3]) == 'string' then
          src = args[1]
@@ -284,11 +507,13 @@ local function warp(...)
                        {type='torch.Tensor', help='input image (KxHxW)', req=true},
                        {type='torch.Tensor', help='(y,x) flow field (2xHxW)', req=true},
                        {type='string', help='mode: bilinear | simple', default='bilinear'},
+                       {type='string', help='offset mode (add (x,y) to flow field)', default=true},
                        '',
                        {type='torch.Tensor', help='destination', req=true},
                        {type='torch.Tensor', help='input image (KxHxW)', req=true},
                        {type='torch.Tensor', help='(y,x) flow field (2xHxW)', req=true},
-                       {type='string', help='mode: bilinear | simple', default='bilinear'}))
+                       {type='string', help='mode: bilinear | simple', default='bilinear'},
+                       {type='string', help='offset mode (add (x,y) to flow field)', default=true}))
       dok.error('incorrect arguments', 'image.warp')
    end
    local dim2 = false
@@ -296,14 +521,81 @@ local function warp(...)
       dim2 = true
       src = src:reshape(1,src:size(1),src:size(2))
    end
-   dst = dst or src.new():resize(src:size(1), field:size(2), field:size(3))
-   src.image.warp(dst,src,field,((mode == 'bilinear') and true) or false)
+   dst = dst or src.new()
+   dst:resize(src:size(1), field:size(2), field:size(3))
+   src.image.warp(dst,src,field,((mode == 'bilinear') and true) or false, offset_mode)
    if dim2 then
       dst = dst[1]
    end
    return dst
 end
 rawset(image, 'warp', warp)
+
+----------------------------------------------------------------------
+-- hflip
+--
+local function hflip(...)
+   local dst,src
+   local args = {...}
+   if select('#',...) == 2 then
+      dst = args[1]
+      src = args[2]
+   elseif select('#',...) == 1 then
+      src = args[1]
+   else
+      print(dok.usage('image.hflip',
+                       'flips an image horizontally', nil,
+                       {type='torch.Tensor', help='input image', req=true},
+                       '',
+                       {type='torch.Tensor', help='destination', req=true},
+                       {type='torch.Tensor', help='input image', req=true}))
+      dok.error('incorrect arguments', 'image.hflip')
+   end
+   dst = dst or src.new():resizeAs(src)
+   dst:resizeAs(src)
+   if src:nDimension() == 2 then
+      src = src:new():resize(1,src:size(1),src:size(2))
+   end
+   local flow = src.new(2,src:size(2),src:size(3))
+   flow[1] = torch.ger( torch.linspace(0,src:size(2)-1,src:size(2)), torch.ones(src:size(3)) )
+   flow[2] = torch.ger( torch.ones(src:size(2)), torch.linspace(-(src:size(3)-1),0,src:size(3))*-1 )
+   dst[{}] = image.warp(src,flow,'simple',false)
+   return dst
+end
+rawset(image, 'hflip', hflip)
+
+----------------------------------------------------------------------
+-- vflip
+--
+local function vflip(...)
+   local dst,src
+   local args = {...}
+   if select('#',...) == 2 then
+      dst = args[1]
+      src = args[2]
+   elseif select('#',...) == 1 then
+      src = args[1]
+   else
+      print(dok.usage('image.vflip',
+                       'flips an image horizontally', nil,
+                       {type='torch.Tensor', help='input image', req=true},
+                       '',
+                       {type='torch.Tensor', help='destination', req=true},
+                       {type='torch.Tensor', help='input image', req=true}))
+      dok.error('incorrect arguments', 'image.vflip')
+   end
+   dst = dst or src.new()
+   dst:resizeAs(src)
+   if src:nDimension() == 2 then
+      src = src:new():resize(1,src:size(1),src:size(2))
+   end
+   local flow = src.new(2,src:size(2),src:size(3))
+   flow[1] = torch.ger( torch.linspace(-(src:size(2)-1),0,src:size(2))*-1, torch.ones(src:size(3)) )
+   flow[2] = torch.ger( torch.ones(src:size(2)), torch.linspace(0,src:size(3)-1,src:size(3)) )
+   dst[{}] = image.warp(src,flow,'simple',false)
+   return dst
+end
+rawset(image, 'vflip', vflip)
 
 ----------------------------------------------------------------------
 -- convolve(dst,src,ker,type)
@@ -387,7 +679,7 @@ local function minmax(args)
 
    -- resize
    if args.tensorOut then
-      tensorOut:resizeAs(tensor):copy(tensor)
+      tensorOut:resize(tensor:size()):copy(tensor)
    end
 
    -- saturate useless if min/max inferred
@@ -474,7 +766,7 @@ local function toDisplayTensor(...)
       for y = 1,ymaps do
          for x = 1,xmaps do
             if k > nmaps then break end
-            grid:narrow(2,(y-1)*height+1,height-padding):narrow(3,(x-1)*width+1,width-padding):copy(input[k])
+            grid:narrow(2,(y-1)*height+1+padding/2,height-padding):narrow(3,(x-1)*width+1+padding/2,width-padding):copy(input[k])
             k = k + 1
          end
       end
@@ -496,7 +788,7 @@ local function toDisplayTensor(...)
       for y = 1,ymaps do
          for x = 1,xmaps do
             if k > nmaps then break end
-            grid:narrow(1,(y-1)*height+1,height-padding):narrow(2,(x-1)*width+1,width-padding):copy(input[k])
+            grid:narrow(1,(y-1)*height+1+padding/2,height-padding):narrow(2,(x-1)*width+1+padding/2,width-padding):copy(input[k])
             k = k + 1
          end
       end
@@ -513,7 +805,7 @@ rawset(image,'toDisplayTensor',toDisplayTensor)
 --
 local function display(...)
    -- usage
-   local _, input, zoom, min, max, legend, w, ox, oy, scaleeach, gui, padding, symm, nrow, saturate = dok.unpack(
+   local _, input, zoom, min, max, legend, w, ox, oy, scaleeach, gui, offscreen, padding, symm, nrow, saturate = dok.unpack(
       {...},
       'image.display',
       'displays a single image, with optional saturation/zoom',
@@ -528,6 +820,8 @@ local function display(...)
       {arg='scaleeach', type='boolean', help='individual scaling for list of images', default=false},
       {arg='gui', type='boolean', help='if on, user can zoom in/out (turn off for faster display)',
        default=true},
+      {arg='offscreen', type='boolean', help='offscreen rendering (to generate images)',
+       default=false},
       {arg='padding', type='number', help='number of padding pixels between images', default=0},
       {arg='symmetric',type='boolean',help='if on, images will be displayed using a symmetric dynamic range, useful for drawing filters', default=false},
       {arg='nrow',type='number',help='number of images per row', default=6},
@@ -549,11 +843,11 @@ local function display(...)
       local mminput = input--image.minmax{tensor=input, min=min, max=max, symm=symm}
       -- Compute width
       local d = input:nDimension()
-      local x = wx or input:size(d)*zoom
-      local y = wy or input:size(d-1)*zoom
+      local x = input:size(d)*zoom
+      local y = input:size(d-1)*zoom
 
       -- if gui active, then create interactive window (with zoom, clicks and so on)
-      if gui and not w then
+      if gui and not w and not offscreen then
          -- create window context
          local closure = w
          local hook_resize, hook_mouse
@@ -586,7 +880,11 @@ local function display(...)
          closure.isclosure = true
          return closure
       else
-         w = w or qtwidget.newwindow(x,y,legend)
+         if offscreen then
+            w = w or qt.QtLuaPainter(x,y)
+         else
+            w = w or qtwidget.newwindow(x,y,legend)
+         end
          if w.isclosure then
             -- window was created with gui, just update closure
             local closure = w
@@ -653,11 +951,13 @@ rawset(image, 'window', window)
 ----------------------------------------------------------------------
 -- lena is always useful
 --
-local function lena()
+local function lena(full)
+   local fname = 'lena'
+   if full then fname = fname .. '_full' end
    if xlua.require 'libjpeg' then
-      lena = image.load(sys.concat(sys.fpath(), 'lena.jpg'), 3)
+      lena = image.load(sys.concat(sys.fpath(), fname .. '.jpg'), 3)
    elseif xlua.require 'libpng' then
-      lena = image.load(sys.concat(sys.fpath(), 'lena.png'), 3)
+      lena = image.load(sys.concat(sys.fpath(), fname .. '.png'), 3)
    else
       dok.error('no bindings available to load images (libjpeg AND libpng missing)', 'image.lena')
    end
@@ -1147,7 +1447,7 @@ function image.colormap(nbColor)
    local map = torch.Tensor(nbColor,3)
    local huef = 0
    local satf = 0
-   for i = 1,nbColor do         
+   for i = 1,nbColor do
       -- HSL
       local hue = math.mod(huef,360)
       local sat = math.mod(satf,0.7) + 0.3
@@ -1164,11 +1464,11 @@ function image.colormap(nbColor)
       if huep < 1 then
          redp = c; greenp = x; bluep = 0
       elseif huep < 2 then
-         redp = x; greenp = c; bluep = 0            
+         redp = x; greenp = c; bluep = 0
       elseif huep < 3 then
          redp = 0; greenp = c; bluep = x
       elseif huep < 4 then
-            redp = 0; greenp = x; bluep = c
+         redp = 0; greenp = x; bluep = c
       elseif huep < 5 then
          redp = x; greenp = 0; bluep = c
       else
@@ -1181,3 +1481,69 @@ function image.colormap(nbColor)
    end
    return map
 end
+
+----------------------------------------------------------------------
+--- Creates a jet colour mapping - Inspired by http://www.metastine.com/?p=7
+--
+function image.jetColormap(nbColour)
+   local map = torch.Tensor(nbColour,3)
+   for i = 1,nbColour do
+      local fourValue = 4 * i / nbColour
+      map[i][1] = math.max(math.min(fourValue - 1.5, -fourValue + 4.5, 1),0)
+      map[i][2] = math.max(math.min(fourValue -  .5, -fourValue + 3.5, 1),0)
+      map[i][3] = math.max(math.min(fourValue +  .5, -fourValue + 2.5, 1),0)
+   end
+   return map
+end
+
+
+
+------------------------------------------------------------------------
+--- Local contrast normalization of an image
+--
+-- do local contrast normalization on a given image tensor using kernel ker.
+-- of kernel is not given, then a default 9x9 gaussian will be used
+function image.lcn(im,ker)
+
+   ker = ker or image.gaussian({size=9,sigma=1.591/9,normalize=true})
+   local im = im:clone():type('torch.DoubleTensor')
+   if not(im:dim() == 2 or (im:dim() == 3 and im:size(1) == 1)) then
+     error('grayscale image expected')
+   end
+   if im:dim() == 3 then
+      im = im[1]
+   end
+   mn = im:mean()
+   sd = im:std()
+   -- print(ker)
+
+   -- 1. subtract the mean and divide by the standard deviation
+   im:add(-mn)
+   im:div(sd)
+
+   -- 2. calculate local mean and std and normalize each pixel
+
+   -- mean
+   local lmn = torch.conv2(im, ker)
+   -- variance
+   local imsq = im:clone():cmul(im)
+   local lmnsq = torch.conv2(imsq, ker)
+   local lvar = lmn:clone():cmul(lmn)
+   lvar:add(-1,lmnsq):mul(-1)
+   -- avoid numerical errors
+   lvar:apply(function(x) if x < 0 then return 0 end end)
+   -- standard deviation
+   local lstd  = lvar:sqrt()
+   lstd:apply(function (x) if x < 1 then return 1 end end)
+
+   -- apply normalization
+   local shifti = math.floor(ker:size(1)/2)+1
+   local shiftj = math.floor(ker:size(2)/2)+1
+   --print(shifti,shiftj,lstd:size(),im:size())
+   local dim = im:narrow(1,shifti,lstd:size(1)):narrow(2,shiftj,lstd:size(2)):clone()
+   dim:add(-1,lmn)
+   dim:cdiv(lstd)
+   return dim:clone()
+
+end
+

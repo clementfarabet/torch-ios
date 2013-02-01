@@ -23,7 +23,8 @@ If prescaled_input is true, then the input has to be a table of pre-downscaled
 3D tensors. It does not work in focus mode.
 ]]
 
-function SpatialPyramid:__init(ratios, processors, kW, kH, dW, dH, prescaled_input)
+function SpatialPyramid:__init(ratios, processors, kW, kH, dW, dH, xDimIn, yDimIn,
+			       xDimOut, yDimOut, prescaled_input)
    parent.__init(self)
    self.prescaled_input = prescaled_input or false
    assert(#ratios == #processors)
@@ -51,8 +52,9 @@ function SpatialPyramid:__init(ratios, processors, kW, kH, dW, dH, prescaled_inp
    self.focused_pipeline = nn.ConcatTable()
    for i = 1,#self.ratios do
       local seq = nn.Sequential()
-      seq:add(nn.SpatialZeroPadding(0,0,0,0))
-      seq:add(nn.SpatialDownSampling(self.ratios[i], self.ratios[i]))
+      seq:add(nn.SpatialPadding(0,0,0,0, yDimIn, xDimIn))
+      seq:add(nn.SpatialReSamplingEx{rwidth=1.0/self.ratios[i], rheight=1.0/self.ratios[i],
+				     xDim = xDimIn, yDim = yDimIn, mode='average'})
       seq:add(processors[i])
       self.focused_pipeline:add(seq)
    end
@@ -66,11 +68,13 @@ function SpatialPyramid:__init(ratios, processors, kW, kH, dW, dH, prescaled_inp
    for i = 1,#self.ratios do
       local seq = nn.Sequential()
       if not prescaled_input then
-	 seq:add(nn.SpatialDownSampling(self.ratios[i], self.ratios[i]))
-	 seq:add(nn.SpatialZeroPadding(padLeft, padRight, padTop, padBottom))
+	 seq:add(nn.SpatialReSamplingEx{rwidth=1.0/self.ratios[i], rheight=1.0/self.ratios[i],
+					xDim = xDimIn, yDim = yDimIn, mode='average'})
+	 seq:add(nn.SpatialPadding(padLeft, padRight, padTop, padBottom, yDimIn, xDimIn))
       end
       seq:add(processors[i])
-      seq:add(nn.SpatialUpSampling(self.ratios[i], self.ratios[i]))
+      seq:add(nn.SpatialReSamplingEx{rwidth=self.ratios[i], rheight=self.ratios[i],
+				     xDim=xDimOut, yDim=yDimOut, mode='simple'})
       self.unfocused_pipeline:add(seq)
    end
 end

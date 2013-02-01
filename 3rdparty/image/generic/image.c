@@ -57,9 +57,9 @@ static void image_(Main_scale_rowcol)(THTensor *Tsrc,
 
   if ( dst_len > src_len ){
     long di;
-    real si_f;
+    float si_f;
     long si_i;
-    real scale = (real)(src_len - 1) / (dst_len - 1);
+    float scale = (float)(src_len - 1) / (dst_len - 1);
 
     for( di = 0; di < dst_len - 1; di++ ) {
       long dst_pos = dst_start + di*dst_stride;
@@ -74,11 +74,11 @@ static void image_(Main_scale_rowcol)(THTensor *Tsrc,
   }
   else if ( dst_len < src_len ) {
     long di;
-    long si0_i = 0; real si0_f = 0;
-    long si1_i; real si1_f;
+    long si0_i = 0; float si0_f = 0;
+    long si1_i; float si1_f;
     long si;
-    real scale = (real)src_len / dst_len;
-    real acc, n;
+    float scale = (float)src_len / dst_len;
+    float acc, n;
     for( di = 0; di < dst_len; di++ )
       {
         si1_f = (di + 1) * scale; si1_i = (long)si1_f; si1_f -= si1_i;
@@ -107,8 +107,8 @@ static void image_(Main_scale_rowcol)(THTensor *Tsrc,
 
 static int image_(Main_scaleBilinear)(lua_State *L) {
 
-  THTensor *Tsrc = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *Tdst = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *Tsrc = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *Tdst = luaT_checkudata(L, 2, torch_Tensor);
   THTensor *Ttmp;
   long dst_stride0, dst_stride1, dst_stride2, dst_width, dst_height;
   long src_stride0, src_stride1, src_stride2, src_width, src_height;
@@ -171,13 +171,13 @@ static int image_(Main_scaleBilinear)(lua_State *L) {
 
 static int image_(Main_scaleSimple)(lua_State *L)
 {
-  THTensor *Tsrc = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *Tdst = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *Tsrc = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *Tdst = luaT_checkudata(L, 2, torch_Tensor);
   real *src, *dst;
   long dst_stride0, dst_stride1, dst_stride2, dst_width, dst_height, dst_depth;
   long src_stride0, src_stride1, src_stride2, src_width, src_height, src_depth;
   long i, j, k;
-  real scx, scy;
+  float scx, scy;
 
   luaL_argcheck(L, Tsrc->nDimension==2 || Tsrc->nDimension==3, 1, "image.scale: src not 2 or 3 dimensional");
   luaL_argcheck(L, Tdst->nDimension==2 || Tdst->nDimension==3, 2, "image.scale: dst not 2 or 3 dimensional");
@@ -217,14 +217,14 @@ static int image_(Main_scaleSimple)(lua_State *L)
     luaL_error(L, "image.scale: src and dst depths do not match");
 
   /* printf("%d,%d -> %d,%d\n",src_width,src_height,dst_width,dst_height); */
-  scx=((real)src_width)/((real)dst_width);
-  scy=((real)src_height)/((real)dst_height);
+  scx=((float)src_width)/((float)dst_width);
+  scy=((float)src_height)/((float)dst_height);
 
   for(j = 0; j < dst_height; j++) {
     for(i = 0; i < dst_width; i++) {
-      real val = 0.0;
-      long ii=(long) (0.5+((real)i)*scx);
-      long jj=(long) (0.5+((real)j)*scy);
+      float val = 0.0;
+      long ii=(long) (0.5+((float)i)*scx);
+      long jj=(long) (0.5+((float)j)*scy);
       if(ii>src_width-1) ii=src_width-1;
       if(jj>src_height-1) jj=src_height-1;
 
@@ -248,15 +248,15 @@ static int image_(Main_scaleSimple)(lua_State *L)
 
 static int image_(Main_rotate)(lua_State *L)
 {
-  THTensor *Tsrc = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *Tdst = luaT_checkudata(L, 2, torch_(Tensor_id));
-  real theta = luaL_checknumber(L, 3);
+  THTensor *Tsrc = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *Tdst = luaT_checkudata(L, 2, torch_Tensor);
+  float theta = luaL_checknumber(L, 3);
   real *src, *dst;
   long dst_stride0, dst_stride1, dst_stride2, dst_width, dst_height, dst_depth;
   long src_stride0, src_stride1, src_stride2, src_width, src_height, src_depth;
   long i, j, k;
-  real xc, yc;
-  real id,jd;
+  float xc, yc;
+  float id,jd;
   long ii,jj;
 
   luaL_argcheck(L, Tsrc->nDimension==2 || Tsrc->nDimension==3, 1, "rotate: src not 2 or 3 dimensional");
@@ -299,7 +299,7 @@ static int image_(Main_rotate)(lua_State *L)
   for(j = 0; j < dst_height; j++) {
     jd=j;
     for(i = 0; i < dst_width; i++) {
-      real val = -1;
+      float val = -1;
       id= i;
 
       ii=(long)( cos(theta)*(id-xc)-sin(theta)*(jd-yc) );
@@ -335,8 +335,8 @@ static int image_(Main_rotate)(lua_State *L)
 
 static int image_(Main_cropNoScale)(lua_State *L)
 {
-  THTensor *Tsrc = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *Tdst = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *Tsrc = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *Tdst = luaT_checkudata(L, 2, torch_Tensor);
   long startx = luaL_checklong(L, 3);
   long starty = luaL_checklong(L, 4);
   real *src, *dst;
@@ -380,7 +380,7 @@ static int image_(Main_cropNoScale)(lua_State *L)
 
   for(j = 0; j < dst_height; j++) {
     for(i = 0; i < dst_width; i++) {
-      real val = 0.0;
+      float val = 0.0;
 
       long ii=i+startx;
       long jj=j+starty;
@@ -405,8 +405,8 @@ static int image_(Main_cropNoScale)(lua_State *L)
 
 static int image_(Main_translate)(lua_State *L)
 {
-  THTensor *Tsrc = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *Tdst = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *Tsrc = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *Tdst = luaT_checkudata(L, 2, torch_Tensor);
   long shiftx = luaL_checklong(L, 3);
   long shifty = luaL_checklong(L, 4);
   real *src, *dst;
@@ -420,10 +420,10 @@ static int image_(Main_translate)(lua_State *L)
   src= THTensor_(data)(Tsrc);
   dst= THTensor_(data)(Tdst);
 
-  dst_stride0 = 0;
+  dst_stride0 = 1;
   dst_stride1 = Tdst->stride[Tdst->nDimension-2];
   dst_stride2 = Tdst->stride[Tdst->nDimension-1];
-  dst_depth =  0;
+  dst_depth =  1;
   dst_height = Tdst->size[Tdst->nDimension-2];
   dst_width = Tdst->size[Tdst->nDimension-1];
   if(Tdst->nDimension == 3) {
@@ -431,10 +431,10 @@ static int image_(Main_translate)(lua_State *L)
     dst_depth = Tdst->size[0];
   }
 
-  src_stride0 = 0;
+  src_stride0 = 1;
   src_stride1 = Tsrc->stride[Tsrc->nDimension-2];
   src_stride2 = Tsrc->stride[Tsrc->nDimension-1];
-  src_depth =  0;
+  src_depth =  1;
   src_height = Tsrc->size[Tsrc->nDimension-2];
   src_width = Tsrc->size[Tsrc->nDimension-1];
   if(Tsrc->nDimension == 3) {
@@ -443,40 +443,26 @@ static int image_(Main_translate)(lua_State *L)
   }
 
   if( Tdst->nDimension==3 && ( src_depth!=dst_depth) )
-    luaL_error(L, "image.crop: src and dst depths do not match");
-
+    luaL_error(L, "image.translate: src and dst depths do not match");
+ 
   for(j = 0; j < src_height; j++) {
-
     for(i = 0; i < src_width; i++) {
-      real val = 0.0;
-
       long ii=i+shiftx;
       long jj=j+shifty;
 
-      if(ii<dst_width && jj<dst_height)
-        /* check it's within destination bounds, else crop */
-        {
-          if(Tsrc->nDimension==2)
-            {
-              val=src[i*src_stride2+j*src_stride1];
-              dst[ii*dst_stride2+jj*dst_stride1] = val;
-            }
-          else
-            {
-              for(k=0;k<src_depth;k++)
-                {
-                  val=src[i*src_stride2+j*src_stride1+k*src_stride0];
-                  dst[ii*dst_stride2+jj*dst_stride1+k*dst_stride0] = val;
-                }
-            }
+      // Check it's within destination bounds, else crop
+      if(ii<dst_width && jj<dst_height && ii>=0 && jj>=0) {
+        for(k=0;k<src_depth;k++) {
+          dst[ii*dst_stride2+jj*dst_stride1+k*dst_stride0] = src[i*src_stride2+j*src_stride1+k*src_stride0];
         }
+      }
     }
   }
   return 0;
 }
 
 static int image_(Main_saturate)(lua_State *L) {
-  THTensor *input = luaT_checkudata(L, 1, torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 1, torch_Tensor);
   THTensor *output = input;
 
   TH_TENSOR_APPLY2(real, output, real, input,                       \
@@ -492,8 +478,8 @@ static int image_(Main_saturate)(lua_State *L) {
  * returns h, s, and l in the set [0, 1].
  */
 int image_(Main_rgb2hsl)(lua_State *L) {
-  THTensor *rgb = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *hsl = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *rgb = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *hsl = luaT_checkudata(L, 2, torch_Tensor);
 
   int y,x;
   real r,g,b,h,s,l;
@@ -556,8 +542,8 @@ static inline real image_(hue2rgb)(real p, real q, real t) {
  * returns r, g, and b in the set [0, 1].
  */
 int image_(Main_hsl2rgb)(lua_State *L) {
-  THTensor *hsl = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *rgb = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *hsl = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *rgb = luaT_checkudata(L, 2, torch_Tensor);
 
   int y,x;
   real r,g,b,h,s,l;
@@ -600,8 +586,8 @@ int image_(Main_hsl2rgb)(lua_State *L) {
  * returns h, s, and v in the set [0, 1].
  */
 int image_(Main_rgb2hsv)(lua_State *L) {
-  THTensor *rgb = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *hsv = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *rgb = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *hsv = luaT_checkudata(L, 2, torch_Tensor);
 
   int y,x;
   real r,g,b,h,s,v;
@@ -649,8 +635,8 @@ int image_(Main_rgb2hsv)(lua_State *L) {
  * returns r, g, and b in the set [0, 1].
  */
 int image_(Main_hsv2rgb)(lua_State *L) {
-  THTensor *hsv = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *rgb = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *hsv = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *rgb = luaT_checkudata(L, 2, torch_Tensor);
 
   int y,x;
   real r,g,b,h,s,v;
@@ -692,15 +678,18 @@ int image_(Main_hsv2rgb)(lua_State *L) {
  * ponts to a source pixel in the original image.
  */
 int image_(Main_warp)(lua_State *L) {
-  THTensor *dst = luaT_checkudata(L, 1, torch_(Tensor_id));
-  THTensor *src = luaT_checkudata(L, 2, torch_(Tensor_id));
-  THTensor *flowfield = luaT_checkudata(L, 3, torch_(Tensor_id));
+  THTensor *dst = luaT_checkudata(L, 1, torch_Tensor);
+  THTensor *src = luaT_checkudata(L, 2, torch_Tensor);
+  THTensor *flowfield = luaT_checkudata(L, 3, torch_Tensor);
   int bilinear = lua_toboolean(L, 4);
+  int offset_mode = lua_toboolean(L, 5);
 
   // dims
-  int width = src->size[2];
-  int height = src->size[1];
-  int channels = src->size[0];
+  int width = dst->size[2];
+  int height = dst->size[1];
+  int src_width = src->size[2];
+  int src_height = src->size[1];
+  int channels = dst->size[0];
   long *is = src->stride;
   long *os = dst->stride;
   long *fs = flowfield->stride;
@@ -717,12 +706,12 @@ int image_(Main_warp)(lua_State *L) {
       // subpixel position:
       real flow_y = flow_data[ 0*fs[0] + y*fs[1] + x*fs[2] ];
       real flow_x = flow_data[ 1*fs[0] + y*fs[1] + x*fs[2] ];
-      float iy = y + flow_y;
-      float ix = x + flow_x;
+      float iy = offset_mode*y + flow_y;
+      float ix = offset_mode*x + flow_x;
 
       // borders
-      ix = MAX(ix,0); ix = MIN(ix,width-1);
-      iy = MAX(iy,0); iy = MIN(iy,height-1);
+      ix = MAX(ix,0); ix = MIN(ix,src_width-1);
+      iy = MAX(iy,0); iy = MIN(iy,src_height-1);
 
       // bilinear?
       if (bilinear) {
@@ -746,9 +735,9 @@ int image_(Main_warp)(lua_State *L) {
         for (k=0; k<channels; k++) {
           dst_data[ k*os[0] + y*os[1] + x*os[2] ] = 
               src_data[ k*is[0] +               iy_nw*is[1] +              ix_nw*is[2] ] * nw
-            + src_data[ k*is[0] +               iy_ne*is[1] + MIN(ix_ne,width-1)*is[2] ] * ne
-            + src_data[ k*is[0] + MIN(iy_sw,height-1)*is[1] +              ix_sw*is[2] ] * sw
-            + src_data[ k*is[0] + MIN(iy_se,height-1)*is[1] + MIN(ix_se,width-1)*is[2] ] * se;
+            + src_data[ k*is[0] +               iy_ne*is[1] + MIN(ix_ne,src_width-1)*is[2] ] * ne
+            + src_data[ k*is[0] + MIN(iy_sw,src_height-1)*is[1] +              ix_sw*is[2] ] * sw
+            + src_data[ k*is[0] + MIN(iy_se,src_height-1)*is[1] + MIN(ix_se,src_width-1)*is[2] ] * se;
         }
       } else {
         // 1 nearest neighbor:
@@ -784,7 +773,7 @@ static const struct luaL_Reg image_(Main__) [] = {
 
 void image_(Main_init)(lua_State *L)
 {
-  luaT_pushmetaclass(L, torch_(Tensor_id));
+  luaT_pushmetatable(L, torch_Tensor);
   luaT_registeratname(L, image_(Main__), "image");
 }
 

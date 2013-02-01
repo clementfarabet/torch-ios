@@ -73,9 +73,6 @@ ADD_SUBDIRECTORY(lib)
 ADD_SUBDIRECTORY(pkg)
 
 # Torch extra packages
-ADD_SUBDIRECTORY(extra)
-
-# Torch extra packages
 ADD_SUBDIRECTORY(3rdparty)
 
 # External packages support

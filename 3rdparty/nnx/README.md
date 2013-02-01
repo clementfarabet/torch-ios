@@ -1,42 +1,21 @@
-# nnx: an Xperimental package for neural network modules + optimizations
+# nnx: experimental stuff for the 'nn' package.
 
 The original neural network from Torch7, 'nn', contains stable and widely
 used modules. 'nnx' contains more experimental, unproven modules, and
 optimizations. Eventually, modules that become stable enough will make 
 their way into 'nn' (some already have).
 
-## Install 
+Disclaimer: DONT USE THIS PACKAGE WITHOUT FIRST CHECKING ITS MODULES !!!
 
-1/ Torch7 is required:
+## Requirements
 
-Dependencies, on Linux (Ubuntu > 9.04):
+* Torch7 (www.torch.ch)
 
-``` sh
-$ apt-get install gcc g++ git libreadline5-dev cmake wget libqt4-core libqt4-gui libqt4-dev
-```
+## Installation
 
-Dependencies, on Mac OS (Leopard, or more), using [Homebrew](http://mxcl.github.com/homebrew/):
-
-``` sh
-$ brew install git readline cmake wget qt
-```
-
-Then on both platforms:
-
-``` sh
-$ git clone https://github.com/andresy/torch
-$ cd torch
-$ mkdir build; cd build
-$ cmake ..
-$ make
-$ [sudo] make install
-```
-
-2/ Once Torch7 is available, install this package:
-
-``` sh
-$ [sudo] torch-pkg install nnx
-```
+* Install Torch7 (refer to its own documentation).
+* clone this project into dev directory of Torch7.
+* Rebuild torch, it will include new projects too.
 
 ## Use the library
 

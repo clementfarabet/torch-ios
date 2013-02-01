@@ -4,7 +4,6 @@
 extern void torch_utils_init(lua_State *L);
 extern void torch_random_init(lua_State *L);
 extern void torch_File_init(lua_State *L);
-extern void torch_File_init_storage_id(lua_State *L);
 extern void torch_DiskFile_init(lua_State *L);
 extern void torch_MemoryFile_init(lua_State *L);
 extern void torch_PipeFile_init(lua_State *L);
@@ -42,16 +41,16 @@ static void luaTorchErrorHandlerFunction(const char *msg)
   luaL_error(globalL, msg);
 }
 
-static void luaTorchArgCheckHandlerFunction(int condition, int argNumber, const char *msg)
+static void luaTorchArgErrorHandlerFunction(int argNumber, const char *msg)
 {
-  luaL_argcheck(globalL, condition, argNumber, msg);
+  luaL_argcheck(globalL, 0, argNumber, msg);
 }
 
 DLL_EXPORT int luaopen_libtorch(lua_State *L)
 {
   globalL = L;
   THSetErrorHandler(luaTorchErrorHandlerFunction);
-  THSetArgCheckHandler(luaTorchArgCheckHandlerFunction);
+  THSetArgErrorHandler(luaTorchArgErrorHandlerFunction);
 
   lua_newtable(L);
   lua_pushvalue(L, -1);
@@ -74,8 +73,6 @@ DLL_EXPORT int luaopen_libtorch(lua_State *L)
   torch_LongTensor_init(L);
   torch_FloatTensor_init(L);
   torch_DoubleTensor_init(L);
-
-  torch_File_init_storage_id(L);
 
   torch_ByteTensorOperator_init(L);
   torch_CharTensorOperator_init(L);

@@ -12,10 +12,10 @@
 static int nn_(SpatialReSampling_updateOutput)(lua_State *L)
 {
   // get all params
-  THTensor *input = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 2, torch_Tensor);
   int owidth = luaT_getfieldcheckint(L, 1, "owidth");
   int oheight = luaT_getfieldcheckint(L, 1, "oheight");
-  THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_(Tensor_id));
+  THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_Tensor);
 
   // check dims
   luaL_argcheck(L, input->nDimension == 3, 2, "3D tensor expected");
@@ -88,9 +88,9 @@ static int nn_(SpatialReSampling_updateOutput)(lua_State *L)
 static int nn_(SpatialReSampling_updateGradInput)(lua_State *L)
 {
   // get all params
-  THTensor *input = luaT_checkudata(L, 2, torch_(Tensor_id));  
-  THTensor *gradOutput = luaT_checkudata(L, 3, torch_(Tensor_id));
-  THTensor *gradInput = luaT_getfieldcheckudata(L, 1, "gradInput", torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 2, torch_Tensor);  
+  THTensor *gradOutput = luaT_checkudata(L, 3, torch_Tensor);
+  THTensor *gradInput = luaT_getfieldcheckudata(L, 1, "gradInput", torch_Tensor);
 
   // dims
   int iwidth = input->size[2];
@@ -173,7 +173,7 @@ static const struct luaL_Reg nn_(SpatialReSampling__) [] = {
 
 static void nn_(SpatialReSampling_init)(lua_State *L)
 {
-  luaT_pushmetaclass(L, torch_(Tensor_id));
+  luaT_pushmetatable(L, torch_Tensor);
   luaT_registeratname(L, nn_(SpatialReSampling__), "nn");
   lua_pop(L,1);
 }

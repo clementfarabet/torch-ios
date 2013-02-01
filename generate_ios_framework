@@ -17,14 +17,12 @@ os.execute[[
    mkdir -p framework/include
 
    cp build/exe/lua/libtorch-lua-static.a framework/lib/
-   cp build/extra/nn/libnn.a framework/lib/
+   cp build/3rdparty/nn/libnn.a framework/lib/
    cp build/lib/luaT/libluaT.a framework/lib/
    cp build/lib/TH/libTH.a framework/lib/
    cp build/pkg/torch/libtorch.a framework/lib/
    cp build/3rdparty/image/libimage.a framework/lib/
-   cp build/3rdparty/nnx/liblbfgs.a framework/lib/
    cp build/3rdparty/nnx/libnnx.a framework/lib/
-   cp build/3rdparty/opencv/libopencv.a framework/lib/
 
    path=`which torch-lua`
    path=`dirname $path`
@@ -40,16 +38,13 @@ os.execute[[
    cp -r pkg/dok/*.lua framework/lua/dok/
 
    mkdir -p framework/lua/nn
-   cp -r extra/nn/*.lua framework/lua/nn/
+   cp -r 3rdparty/nn/*.lua framework/lua/nn/
 
    mkdir -p framework/lua/nnx
    cp -r 3rdparty/nnx/*.lua framework/lua/nnx/
 
    mkdir -p framework/lua/image
    cp -r 3rdparty/image/*.lua framework/lua/image/
-
-   mkdir -p framework/lua/opencv
-   cp -r 3rdparty/opencv/*.lua framework/lua/opencv/
 ]]
 
 print '==> exported complete framework in framework/'

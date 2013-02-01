@@ -21,9 +21,9 @@ wrap.argtypes.Tensor = {
    
    check = function(arg, idx)
               if arg.dim then
-                 return string.format("(arg%d = luaT_toudata(L, %d, torch_(Tensor_id))) && (arg%d->nDimension == %d)", arg.i, idx, arg.i, arg.dim)
+                 return string.format("(arg%d = luaT_toudata(L, %d, torch_Tensor)) && (arg%d->nDimension == %d)", arg.i, idx, arg.i, arg.dim)
               else
-                 return string.format("(arg%d = luaT_toudata(L, %d, torch_(Tensor_id)))", arg.i, idx)
+                 return string.format("(arg%d = luaT_toudata(L, %d, torch_Tensor))", arg.i, idx)
               end
          end,
 
@@ -58,11 +58,11 @@ wrap.argtypes.Tensor = {
                    table.insert(txt, string.format('lua_pushvalue(L, arg%d_idx);', arg.i))
                    table.insert(txt, string.format('else'))
                    if type(arg.default) == 'boolean' then -- boolean: we did a new()
-                      table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_(Tensor_id));', arg.i))
+                      table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_Tensor);', arg.i))
                    else  -- otherwise: point on default tensor --> retain
                       table.insert(txt, string.format('{'))
                       table.insert(txt, string.format('THTensor_(retain)(arg%d);', arg.i)) -- so we need a retain
-                      table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_(Tensor_id));', arg.i))
+                      table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_Tensor);', arg.i))
                       table.insert(txt, string.format('}'))
                    end
                 elseif arg.default then
@@ -82,7 +82,7 @@ wrap.argtypes.Tensor = {
                  if arg.creturned then
                     -- this next line is actually debatable
                     table.insert(txt, string.format('THTensor_(retain)(arg%d);', arg.i))
-                    table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_(Tensor_id));', arg.i))
+                    table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_Tensor);', arg.i))
                  end
                  return table.concat(txt, '\n')
               end
@@ -104,14 +104,16 @@ wrap.argtypes.IndexTensor = {
            end,
    
    check = function(arg, idx)
-              return string.format("(arg%d = luaT_toudata(L, %d, torch_LongTensor_id))", arg.i, idx)
+              return string.format('(arg%d = luaT_toudata(L, %d, "torch.LongTensor"))', arg.i, idx)
            end,
 
    read = function(arg, idx)
              local txt = {}
-             table.insert(txt, string.format("THLongTensor_add(arg%d, arg%d, -1);", arg.i, arg.i));
+             if not arg.noreadadd then
+                table.insert(txt, string.format("THLongTensor_add(arg%d, arg%d, -1);", arg.i, arg.i));
+             end
              if arg.returned then
-                return table.insert(txt, string.format("arg%d_idx = %d;", arg.i, idx))
+                table.insert(txt, string.format("arg%d_idx = %d;", arg.i, idx))
              end
              return table.concat(txt, '\n')
           end,
@@ -134,7 +136,7 @@ wrap.argtypes.IndexTensor = {
                    table.insert(txt, string.format('if(arg%d_idx)', arg.i)) -- means it was passed as arg
                    table.insert(txt, string.format('lua_pushvalue(L, arg%d_idx);', arg.i))
                    table.insert(txt, string.format('else')) -- means we did a new()
-                   table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_LongTensor_id);', arg.i))
+                   table.insert(txt, string.format('luaT_pushudata(L, arg%d, "torch.LongTensor");', arg.i))
                 elseif arg.default then
                    error('a tensor cannot be optional if not returned')
                 elseif arg.returned then
@@ -151,7 +153,7 @@ wrap.argtypes.IndexTensor = {
                  if arg.creturned then
                     -- this next line is actually debatable
                     table.insert(txt, string.format('THLongTensor_retain(arg%d);', arg.i))
-                    table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_LongTensor_id);', arg.i))
+                    table.insert(txt, string.format('luaT_pushudata(L, arg%d, "torch.LongTensor");', arg.i))
                  end
                  return table.concat(txt, '\n')
               end
@@ -181,9 +183,9 @@ for _,typename in ipairs({"ByteTensor", "CharTensor", "ShortTensor", "IntTensor"
       
       check = function(arg, idx)
                  if arg.dim then
-                    return string.format("(arg%d = luaT_toudata(L, %d, torch_%s_id)) && (arg%d->nDimension == %d)", arg.i, idx, typename, arg.i, arg.dim)
+                    return string.format('(arg%d = luaT_toudata(L, %d, "torch.%s")) && (arg%d->nDimension == %d)', arg.i, idx, typename, arg.i, arg.dim)
                  else
-                    return string.format("(arg%d = luaT_toudata(L, %d, torch_%s_id))", arg.i, idx, typename)
+                    return string.format('(arg%d = luaT_toudata(L, %d, "torch.%s"))', arg.i, idx, typename)
                  end
               end,
 
@@ -218,11 +220,11 @@ for _,typename in ipairs({"ByteTensor", "CharTensor", "ShortTensor", "IntTensor"
                       table.insert(txt, string.format('lua_pushvalue(L, arg%d_idx);', arg.i))
                       table.insert(txt, string.format('else'))
                       if type(arg.default) == 'boolean' then -- boolean: we did a new()
-                         table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_%s_id);', arg.i, typename))
+                         table.insert(txt, string.format('luaT_pushudata(L, arg%d, "torch.%s");', arg.i, typename))
                       else  -- otherwise: point on default tensor --> retain
                          table.insert(txt, string.format('{'))
                          table.insert(txt, string.format('TH%s_retain(arg%d);', typename, arg.i)) -- so we need a retain
-                         table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_%s_id);', arg.i, typename))
+                         table.insert(txt, string.format('luaT_pushudata(L, arg%d, "torch.%s");', arg.i, typename))
                          table.insert(txt, string.format('}'))
                       end
                    elseif arg.default then
@@ -242,7 +244,7 @@ for _,typename in ipairs({"ByteTensor", "CharTensor", "ShortTensor", "IntTensor"
                     if arg.creturned then
                        -- this next line is actually debatable
                        table.insert(txt, string.format('TH%s_retain(arg%d);', typename, arg.i))
-                       table.insert(txt, string.format('luaT_pushudata(L, arg%d, torch_%s_id);', arg.i, typename))
+                       table.insert(txt, string.format('luaT_pushudata(L, arg%d, "torch.%s");', arg.i, typename))
                     end
                     return table.concat(txt, '\n')
                  end

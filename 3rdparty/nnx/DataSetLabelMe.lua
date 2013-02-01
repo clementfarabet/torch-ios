@@ -364,7 +364,7 @@ function DataSetLabelMe:loadSample(index)
       else
          -- PNG already stores values at the correct classes
          -- only holds values from 0 to nclasses
-         self.currentMask:mul(255):add(1)
+         self.currentMask:mul(255):add(1):add(0.5):floor()
       end
       self.currentIndex = index
    end

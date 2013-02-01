@@ -20,7 +20,7 @@ static const struct luaL_Reg nn_(Template__) [] = {
 
 static void nn_(Template_init)(lua_State *L)
 {
-  luaT_pushmetaclass(L, torch_(Tensor_id));
+  luaT_pushmetatable(L, torch_Tensor);
   luaT_registeratname(L, nn_(Template__), "nn");
   lua_pop(L,1);
 }

@@ -19,7 +19,7 @@ end
 function SpatialMatching:updateOutput(input)
    -- input is a table of 2 inputs, each one being KxHxW
    -- if not full_output, the 1st one is KxH1xW1 where H1 <= H-maxh+1, W1 <= W-maxw+1
-   self.output:resize(self.maxh, self.maxw, input[1]:size(2), input[1]:size(3))
+   self.output:resize(input[1]:size(2), input[1]:size(3), self.maxh, self.maxw)
    input[1].nn.SpatialMatching_updateOutput(self, input[1], input[2])
    return self.output
 end

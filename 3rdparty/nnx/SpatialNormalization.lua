@@ -27,6 +27,9 @@ result = mod:forward(stimulus)]]
 function SpatialNormalization:__init(...) -- kernel for weighted mean | nb of features
    parent.__init(self)
 
+   print('<SpatialNormalization> WARNING: this module has been deprecated,')
+   print(' please use SpatialContrastiveNormalization instead')
+
    -- get args
    local args, nf, ker, thres
       = xlua.unpack(

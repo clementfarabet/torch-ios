@@ -4,7 +4,7 @@
 
 static int nn_(DistMarginCriterion_updateOutput)(lua_State *L)
 {
-  THTensor *input = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 2, torch_Tensor);
   int sizeAverage = luaT_getfieldcheckboolean(L, 1, "sizeAverage");
   real *input_data, *target_data;
   long nframe, dim;
@@ -18,7 +18,7 @@ static int nn_(DistMarginCriterion_updateOutput)(lua_State *L)
   if(input->nDimension == 1) {
     nframe = 1;
     dim = input->size[0];
-    target_ = luaT_checkudata(L, 3, torch_(Tensor_id));
+    target_ = luaT_checkudata(L, 3, torch_Tensor);
     target = THTensor_(new)();
     THTensor_(set)(target, target_);
     THTensor_(resize2d)(target, 1, dim);
@@ -26,7 +26,7 @@ static int nn_(DistMarginCriterion_updateOutput)(lua_State *L)
   else {
     nframe = input->size[0];
     dim = input->size[1];
-    target_ = luaT_checkudata(L, 3, torch_(Tensor_id));
+    target_ = luaT_checkudata(L, 3, torch_Tensor);
     THArgCheck((target_->nDimension == 2) && (target_->size[0] == nframe) && (target_->size[1] == dim),
                3, "inconsistent target size");
     target = THTensor_(newContiguous)(target_);
@@ -84,9 +84,9 @@ static int nn_(DistMarginCriterion_updateOutput)(lua_State *L)
 
 static int nn_(DistMarginCriterion_updateGradInput)(lua_State *L)
 {
-  THTensor *input = luaT_checkudata(L, 2, torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 2, torch_Tensor);
   int sizeAverage = luaT_getfieldcheckboolean(L, 1, "sizeAverage");
-  THTensor *gradInput = luaT_getfieldcheckudata(L, 1, "gradInput", torch_(Tensor_id));
+  THTensor *gradInput = luaT_getfieldcheckudata(L, 1, "gradInput", torch_Tensor);
   real *input_data;
   real *gradInput_data;
   real *target_data;
@@ -95,14 +95,13 @@ static int nn_(DistMarginCriterion_updateGradInput)(lua_State *L)
   long nframe, dim;
   long t, d, m;
   real g;
-  real sum;
 
   THArgCheck((input->nDimension == 1) || (input->nDimension == 2), 2, "vector or matrix expected");
 
   if(input->nDimension == 1) {
     nframe = 1;
     dim = input->size[0];
-    target_ = luaT_checkudata(L, 3, torch_(Tensor_id));
+    target_ = luaT_checkudata(L, 3, torch_Tensor);
     target = THTensor_(new)();
     THTensor_(set)(target, target_);
     THTensor_(resize2d)(target, 1, dim);
@@ -110,7 +109,7 @@ static int nn_(DistMarginCriterion_updateGradInput)(lua_State *L)
   else {
     nframe = input->size[0];
     dim = input->size[1];
-    target_ = luaT_checkudata(L, 3, torch_(Tensor_id));
+    target_ = luaT_checkudata(L, 3, torch_Tensor);
     THArgCheck((target_->nDimension == 2) && (target_->size[0] == nframe) && (target_->size[1] == dim),
                3, "inconsistent target size");
     target = THTensor_(newContiguous)(target_);
@@ -179,7 +178,7 @@ static const struct luaL_Reg nn_(DistMarginCriterion__) [] = {
 
 static void nn_(DistMarginCriterion_init)(lua_State *L)
 {
-  luaT_pushmetaclass(L, torch_(Tensor_id));
+  luaT_pushmetatable(L, torch_Tensor);
   luaT_registeratname(L, nn_(DistMarginCriterion__), "nn");
   lua_pop(L,1);
 }

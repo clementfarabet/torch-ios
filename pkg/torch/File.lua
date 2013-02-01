@@ -41,7 +41,7 @@ function File:isWritableObject(object)
    return typeidx
 end
 
-function File:writeObject(object)
+function File:writeObject(object, force)
    -- we use an environment to keep a record of written objects
    if not torch.getenv(self).writeObjects then
       torch.setenv(self, {writeObjects={}, writeObjectsRef={}, readObjects={}})
@@ -86,7 +86,7 @@ function File:writeObject(object)
       local objectsRef = torch.getenv(self).writeObjectsRef
       local index = objects[torch.pointer(object)]
 
-      if index then
+      if index and (not force) then
          -- if already exists, write only its index
          self:writeInt(index)
       else
@@ -193,7 +193,7 @@ function File:readObject()
          if object.read then
             object:read(self, versionNumber)
          elseif type(object) == 'table' then
-            local var = self:readObject(var)
+            local var = self:readObject()
             for k,v in pairs(var) do
                object[k] = v
             end
@@ -232,6 +232,28 @@ function torch.load(filename, mode)
    file[mode](file)
    local object = file:readObject()
    file:close()
+   return object
+end
+
+-- simple helpers to serialize/deserialize arbitrary objects/tables
+function torch.serialize(object)
+   local f = torch.MemoryFile()
+   f:writeObject(object)
+   local s = f:storage():string()
+   f:close()
+   return s
+end
+
+function torch.deserialize(str)
+   local x = torch.CharStorage():string(str)
+   local tx = torch.CharTensor(x)
+   local xp = torch.CharStorage(x:size(1)+1)
+   local txp = torch.CharTensor(xp)
+   txp:narrow(1,1,tx:size(1)):copy(tx)
+   txp[tx:size(1)+1] = 0
+   local f = torch.MemoryFile(xp)
+   local object = f:readObject()
+   f:close()
    return object
 end
 

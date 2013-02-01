@@ -5,17 +5,13 @@
 static int nn_(SpatialLinear_updateOutput)(lua_State *L)
 {
   // get all params
-  THTensor *input = luaT_checkudata(L, 2, torch_(Tensor_id));
-  THTensor *bias = luaT_getfieldcheckudata(L, 1, "bias", torch_(Tensor_id));
-  THTensor *weight = luaT_getfieldcheckudata(L, 1, "weight", torch_(Tensor_id));
-  THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 2, torch_Tensor);
+  THTensor *bias = luaT_getfieldcheckudata(L, 1, "bias", torch_Tensor);
+  THTensor *weight = luaT_getfieldcheckudata(L, 1, "weight", torch_Tensor);
+  THTensor *output = luaT_getfieldcheckudata(L, 1, "output", torch_Tensor);
 
   // dims
-  int iwidth = input->size[2];
-  int iheight = input->size[1];
   int ichannels = input->size[0];
-  int owidth = iwidth;
-  int oheight = iheight;
   int ochannels = output->size[0];
 
   // planes
@@ -46,22 +42,17 @@ static int nn_(SpatialLinear_updateOutput)(lua_State *L)
 static int nn_(SpatialLinear_updateGradInput)(lua_State *L)
 {
   // get all params
-  THTensor *input = luaT_checkudata(L, 2, torch_(Tensor_id));
-  THTensor *gradOutput = luaT_checkudata(L, 3, torch_(Tensor_id));
-  THTensor *gradInput = luaT_getfieldcheckudata(L, 1, "gradInput", torch_(Tensor_id));
-  THTensor *weight = luaT_getfieldcheckudata(L, 1, "weight", torch_(Tensor_id));
-  THTensor *bias = luaT_getfieldcheckudata(L, 1, "bias", torch_(Tensor_id));
-  THTensor *gradWeight = luaT_getfieldcheckudata(L, 1, "gradWeight", torch_(Tensor_id));
-  THTensor *gradBias = luaT_getfieldcheckudata(L, 1, "gradBias", torch_(Tensor_id));
+  THTensor *input = luaT_checkudata(L, 2, torch_Tensor);
+  THTensor *gradOutput = luaT_checkudata(L, 3, torch_Tensor);
+  THTensor *gradInput = luaT_getfieldcheckudata(L, 1, "gradInput", torch_Tensor);
+  THTensor *weight = luaT_getfieldcheckudata(L, 1, "weight", torch_Tensor);
+  THTensor *gradWeight = luaT_getfieldcheckudata(L, 1, "gradWeight", torch_Tensor);
+  THTensor *gradBias = luaT_getfieldcheckudata(L, 1, "gradBias", torch_Tensor);
   int weightDecay = luaT_getfieldcheckint(L, 1, "weightDecay");
 
   // dims
-  int iwidth = input->size[2];
-  int iheight = input->size[1];
-  int ichannels = input->size[0];
   int owidth = gradOutput->size[2];
   int oheight = gradOutput->size[1];
-  int ochannels = gradOutput->size[0];
 
   // resize gradInput
   THTensor_(zero)(gradInput);
@@ -125,7 +116,7 @@ static const struct luaL_Reg nn_(SpatialLinear__) [] = {
 
 static void nn_(SpatialLinear_init)(lua_State *L)
 {
-  luaT_pushmetaclass(L, torch_(Tensor_id));
+  luaT_pushmetatable(L, torch_Tensor);
   luaT_registeratname(L, nn_(SpatialLinear__), "nn");
   lua_pop(L,1);
 }

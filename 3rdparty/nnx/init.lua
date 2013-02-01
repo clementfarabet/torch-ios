@@ -1,92 +1,84 @@
+----------------------------------------------------------------------
+--
+-- Copyright (c) 2011 Clement Farabet, Marco Scoffier, 
+--                    Koray Kavukcuoglu, Benoit Corda
+--
+-- 
+-- Permission is hereby granted, free of charge, to any person obtaining
+-- a copy of this software and associated documentation files (the
+-- "Software"), to deal in the Software without restriction, including
+-- without limitation the rights to use, copy, modify, merge, publish,
+-- distribute, sublicense, and/or sell copies of the Software, and to
+-- permit persons to whom the Software is furnished to do so, subject to
+-- the following conditions:
+-- 
+-- The above copyright notice and this permission notice shall be
+-- included in all copies or substantial portions of the Software.
+-- 
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+-- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+-- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+-- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+-- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+-- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+-- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-- 
+----------------------------------------------------------------------
+-- description:
+--     xlua - lots of new trainable modules that extend the nn 
+--            package.
+--
+-- history: 
+--     July  5, 2011, 8:51PM - import from Torch5 - Clement Farabet
+----------------------------------------------------------------------
 
-torch.include('nn', 'Module.lua')
- 
-torch.include('nn', 'Concat.lua')
-torch.include('nn', 'Parallel.lua')  
-torch.include('nn', 'Sequential.lua')
+require 'torch'
+require 'xlua'
+require 'nn'
 
-torch.include('nn', 'Linear.lua')
-torch.include('nn', 'SparseLinear.lua')
-torch.include('nn', 'Reshape.lua')  
-torch.include('nn', 'Select.lua')
-torch.include('nn', 'Narrow.lua')
-torch.include('nn', 'Replicate.lua')
-  
-torch.include('nn', 'Copy.lua')
-torch.include('nn', 'Min.lua')
-torch.include('nn', 'Max.lua')
-torch.include('nn', 'Mean.lua')
-torch.include('nn', 'Sum.lua')
-torch.include('nn', 'CMul.lua')  
-torch.include('nn', 'Mul.lua')  
-torch.include('nn', 'Add.lua')  
+-- create global nnx table:
+nnx = {}
 
-torch.include('nn', 'CAddTable.lua')
-torch.include('nn', 'CDivTable.lua')
-torch.include('nn', 'CMulTable.lua')
-torch.include('nn', 'CSubTable.lua')
+-- c lib:
+require 'libnnx'
 
-torch.include('nn', 'Euclidean.lua')  
-torch.include('nn', 'WeightedEuclidean.lua')  
-torch.include('nn', 'PairwiseDistance.lua')  
-torch.include('nn', 'CosineDistance.lua')  
-torch.include('nn', 'DotProduct.lua')  
+-- for testing:
+torch.include('nnx', 'test-all.lua')
+torch.include('nnx', 'test-omp.lua')
 
-torch.include('nn', 'Exp.lua')
-torch.include('nn', 'Log.lua')
-torch.include('nn', 'HardTanh.lua')
-torch.include('nn', 'LogSigmoid.lua')
-torch.include('nn', 'LogSoftMax.lua')
-torch.include('nn', 'Sigmoid.lua')
-torch.include('nn', 'SoftMax.lua')
-torch.include('nn', 'SoftMin.lua')
-torch.include('nn', 'SoftPlus.lua')
-torch.include('nn', 'SoftSign.lua')
-torch.include('nn', 'Tanh.lua')
-torch.include('nn', 'Abs.lua')
-torch.include('nn', 'Power.lua')
-torch.include('nn', 'Square.lua')
-torch.include('nn', 'Sqrt.lua')
-torch.include('nn', 'HardShrink.lua')
-torch.include('nn', 'SoftShrink.lua')
-torch.include('nn', 'Threshold.lua')
+-- tools:
+torch.include('nnx', 'Probe.lua')
+torch.include('nnx', 'Tic.lua')
+torch.include('nnx', 'Toc.lua')
 
-torch.include('nn', 'LookupTable.lua')
-torch.include('nn', 'SpatialConvolution.lua')
-torch.include('nn', 'SpatialConvolutionMap.lua')
-torch.include('nn', 'SpatialSubSampling.lua')
-torch.include('nn', 'SpatialMaxPooling.lua')
-torch.include('nn', 'SpatialLPPooling.lua')
-torch.include('nn', 'TemporalConvolution.lua')
-torch.include('nn', 'TemporalSubSampling.lua')
-torch.include('nn', 'SpatialSubtractiveNormalization.lua')
-torch.include('nn', 'SpatialDivisiveNormalization.lua')
-torch.include('nn', 'SpatialContrastiveNormalization.lua')
-torch.include('nn', 'SpatialZeroPadding.lua')
+-- spatial (images) operators:
+torch.include('nnx', 'SpatialLinear.lua')
+torch.include('nnx', 'SpatialClassifier.lua')
+torch.include('nnx', 'SpatialNormalization.lua')
+torch.include('nnx', 'SpatialPadding.lua')
+torch.include('nnx', 'SpatialReSamplingEx.lua')
+torch.include('nnx', 'SpatialUpSampling.lua')
+torch.include('nnx', 'SpatialDownSampling.lua')
+torch.include('nnx', 'SpatialReSampling.lua')
+torch.include('nnx', 'SpatialRecursiveFovea.lua')
+torch.include('nnx', 'SpatialFovea.lua')
+torch.include('nnx', 'SpatialPyramid.lua')
+torch.include('nnx', 'SpatialGraph.lua')
+torch.include('nnx', 'SpatialMatching.lua')
+torch.include('nnx', 'SpatialRadialMatching.lua')
+torch.include('nnx', 'SpatialMaxSampling.lua')
+torch.include('nnx', 'SpatialColorTransform.lua')
 
-torch.include('nn', 'VolumetricConvolution.lua')
+-- other modules
+torch.include('nnx', 'FunctionWrapper.lua')
 
-torch.include('nn', 'ParallelTable.lua')  
-torch.include('nn', 'ConcatTable.lua')  
-torch.include('nn', 'SplitTable.lua')  
-torch.include('nn', 'JoinTable.lua')  
-torch.include('nn', 'CriterionTable.lua')
-torch.include('nn', 'Identity.lua')  
+-- criterions:
+torch.include('nnx', 'SuperCriterion.lua')
+torch.include('nnx', 'DistNLLCriterion.lua')
+torch.include('nnx', 'DistMarginCriterion.lua')
 
-torch.include('nn', 'Criterion.lua')
-torch.include('nn', 'MSECriterion.lua')
-torch.include('nn', 'MarginCriterion.lua')
-torch.include('nn', 'AbsCriterion.lua')
-torch.include('nn', 'ClassNLLCriterion.lua')
-torch.include('nn', 'DistKLDivCriterion.lua')
-torch.include('nn', 'MultiCriterion.lua')
-torch.include('nn', 'L1HingeEmbeddingCriterion.lua')
-torch.include('nn', 'HingeEmbeddingCriterion.lua')
-torch.include('nn', 'CosineEmbeddingCriterion.lua')
-torch.include('nn', 'MarginRankingCriterion.lua')
-torch.include('nn', 'MultiMarginCriterion.lua')
-torch.include('nn', 'MultiLabelMarginCriterion.lua')
-
-torch.include('nn', 'StochasticGradient.lua')
-
-torch.include('nn', 'Jacobian.lua')
+-- datasets:
+torch.include('nnx', 'DataSet.lua')
+torch.include('nnx', 'DataList.lua')
+torch.include('nnx', 'DataSetLabelMe.lua')
+torch.include('nnx', 'DataSetSamplingPascal.lua')

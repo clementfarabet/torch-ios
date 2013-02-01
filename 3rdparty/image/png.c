@@ -20,25 +20,21 @@ void abort_(const char * s, ...)
 }
 
 #define torch_(NAME) TH_CONCAT_3(torch_, Real, NAME)
-#define torch_string_(NAME) TH_CONCAT_STRING_3(torch., Real, NAME)
+#define torch_Tensor TH_CONCAT_STRING_3(torch., Real, Tensor)
 #define libpng_(NAME) TH_CONCAT_3(libpng_, Real, NAME)
 
-static const void* torch_FloatTensor_id = NULL;
-static const void* torch_DoubleTensor_id = NULL;
-
 #include "generic/png.c"
-#include "THGenerateFloatTypes.h"
+#include "THGenerateAllTypes.h"
 
 DLL_EXPORT int luaopen_libpng(lua_State *L)
 {
-  torch_FloatTensor_id = luaT_checktypename2id(L, "torch.FloatTensor");
-  torch_DoubleTensor_id = luaT_checktypename2id(L, "torch.DoubleTensor");
-
   libpng_FloatMain_init(L);
   libpng_DoubleMain_init(L);
+  libpng_ByteMain_init(L);
 
   luaL_register(L, "libpng.double", libpng_DoubleMain__);
   luaL_register(L, "libpng.float", libpng_FloatMain__);
+  luaL_register(L, "libpng.byte", libpng_ByteMain__);
 
   return 1;
 }
