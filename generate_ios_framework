@@ -2,6 +2,8 @@
 
 print '==> building lua and 3rd party packages as static libs'
 os.execute[[
+   unset CC
+   unset CXX
    rm -f build/CMakeCache.txt
    mkdir -p build
    cd build
@@ -31,25 +33,23 @@ os.execute[[
 
 print '==> exporting Lua sources'
 os.execute[[
-   mkdir -p framework/lua
+   mkdir -p framework/lua/torch
+   cp -r pkg/torch/*.lua framework/lua/torch/
 
-   cp -r pkg/torch/*.lua framework/lua/
-   mv framework/lua/init.lua framework/lua/torch.lua
+   mkdir -p framework/lua/dok
+   cp -r pkg/dok/*.lua framework/lua/dok/
 
-   cp -r pkg/dok/*.lua framework/lua/
-   mv framework/lua/init.lua framework/lua/dok.lua
+   mkdir -p framework/lua/nn
+   cp -r extra/nn/*.lua framework/lua/nn/
 
-   cp -r extra/nn/*.lua framework/lua/
-   mv framework/lua/init.lua framework/lua/nn.lua
+   mkdir -p framework/lua/nnx
+   cp -r 3rdparty/nnx/*.lua framework/lua/nnx/
 
-   cp -r 3rdparty/nnx/*.lua framework/lua/
-   mv framework/lua/init.lua framework/lua/nnx.lua
+   mkdir -p framework/lua/image
+   cp -r 3rdparty/image/*.lua framework/lua/image/
 
-   cp -r 3rdparty/image/*.lua framework/lua/
-   mv framework/lua/init.lua framework/lua/image.lua
-
-   cp -r 3rdparty/opencv/*.lua framework/lua/
-   mv framework/lua/init.lua framework/lua/opencv.lua
+   mkdir -p framework/lua/opencv
+   cp -r 3rdparty/opencv/*.lua framework/lua/opencv/
 ]]
 
 print '==> exported complete framework in framework/'

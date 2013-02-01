@@ -21,8 +21,8 @@ set(CMAKE_CXX_COMPILER ${IPHONE_ROOT}/usr/bin/g++)
 
 set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
 
-add_definitions("-D__IPHONE__")
-add_definitions("-arch armv7 -mfpu=neon -D__NEON__ -pipe -no-cpp-precomp --sysroot=${IPHONE_SDK_ROOT} -miphoneos-version-min=${IPHONE_SDK}")
+add_definitions("-arch armv7 -mfpu=neon -D__IPHONE__ -D__NEON__ -pipe -no-cpp-precomp --sysroot=${IPHONE_SDK_ROOT} -miphoneos-version-min=${IPHONE_SDK}")
+
 set(CMAKE_C_LINK_FLAGS "-arch armv7 --isysroot=${IPHONE_SDK_ROOT} -miphoneos-version-min=${IPHONE_SDK} -L${IPHONE_SDK_ROOT}/usr/lib -L${IPHONE_SDK_ROOT}/usr/lib/system")
 set(CMAKE_CXX_LINK_FLAGS ${CMAKE_C_LINK_FLAGS})
 

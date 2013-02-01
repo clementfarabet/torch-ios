@@ -1,7 +1,4 @@
 
--- override system functions
-require = function(lib) print('=> requiring ' .. lib) end
-
 -- create some dummy packages
 paths = {
     require = require
@@ -31,7 +28,7 @@ function torch.packageLuaPath(name)
 end
 
 function torch.include(package, file)
-   --dofile(torch.packageLuaPath(package) .. '/' .. file) 
+   require(package..'/'..file)
 end
 
 function torch.class(tname, parenttname)
@@ -70,11 +67,13 @@ function torch.setdefaulttensortype(typename)
    end
 end
 
-torch.setdefaulttensortype('torch.DoubleTensor')
+torch.setdefaulttensortype('torch.FloatTensor')
 
 torch.include('torch', 'Tensor.lua')
 torch.include('torch', 'File.lua')
 torch.include('torch', 'CmdLine.lua')
 torch.include('torch', 'Tester.lua')
 torch.include('torch', 'test.lua')
+
 return torch
+
