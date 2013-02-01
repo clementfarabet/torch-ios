@@ -29,12 +29,6 @@
 --     July  1, 2011, 7:42PM - import from Torch5 - Clement Farabet
 ----------------------------------------------------------------------
 
-require 'torch'
-require 'sys'
-require 'xlua'
-require 'dok'
-require 'libimage'
-
 ----------------------------------------------------------------------
 -- save/load in multiple formats
 --

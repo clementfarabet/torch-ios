@@ -28,7 +28,8 @@ function torch.packageLuaPath(name)
 end
 
 function torch.include(package, file)
-   require(package..'/'..file)
+   local req = package..'.'..file:gsub('.lua$','')
+   require(req)
 end
 
 function torch.class(tname, parenttname)
@@ -73,7 +74,5 @@ torch.include('torch', 'Tensor.lua')
 torch.include('torch', 'File.lua')
 torch.include('torch', 'CmdLine.lua')
 torch.include('torch', 'Tester.lua')
-torch.include('torch', 'test.lua')
 
 return torch
-

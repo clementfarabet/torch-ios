@@ -1,261 +1,93 @@
-----------------------------------------------------------------------
---
--- Copyright (c) 2011 Clement Farabet, Marco Scoffier, 
---                    Koray Kavukcuoglu, Benoit Corda
---
--- 
--- Permission is hereby granted, free of charge, to any person obtaining
--- a copy of this software and associated documentation files (the
--- "Software"), to deal in the Software without restriction, including
--- without limitation the rights to use, copy, modify, merge, publish,
--- distribute, sublicense, and/or sell copies of the Software, and to
--- permit persons to whom the Software is furnished to do so, subject to
--- the following conditions:
--- 
--- The above copyright notice and this permission notice shall be
--- included in all copies or substantial portions of the Software.
--- 
--- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
--- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
--- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
--- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
--- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
--- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
--- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
--- 
-----------------------------------------------------------------------
--- description:
---     xlua - lots of new trainable modules that extend the nn 
---            package.
---
--- history: 
---     July  5, 2011, 8:51PM - import from Torch5 - Clement Farabet
-----------------------------------------------------------------------
 
-require 'torch'
-require 'xlua'
-require 'nn'
+torch.include('nn', 'Module.lua')
+ 
+torch.include('nn', 'Concat.lua')
+torch.include('nn', 'Parallel.lua')  
+torch.include('nn', 'Sequential.lua')
 
--- create global nnx table:
-nnx = {}
+torch.include('nn', 'Linear.lua')
+torch.include('nn', 'SparseLinear.lua')
+torch.include('nn', 'Reshape.lua')  
+torch.include('nn', 'Select.lua')
+torch.include('nn', 'Narrow.lua')
+torch.include('nn', 'Replicate.lua')
+  
+torch.include('nn', 'Copy.lua')
+torch.include('nn', 'Min.lua')
+torch.include('nn', 'Max.lua')
+torch.include('nn', 'Mean.lua')
+torch.include('nn', 'Sum.lua')
+torch.include('nn', 'CMul.lua')  
+torch.include('nn', 'Mul.lua')  
+torch.include('nn', 'Add.lua')  
 
--- c lib:
-require 'libnnx'
+torch.include('nn', 'CAddTable.lua')
+torch.include('nn', 'CDivTable.lua')
+torch.include('nn', 'CMulTable.lua')
+torch.include('nn', 'CSubTable.lua')
 
--- for testing:
-torch.include('nnx', 'test-all.lua')
-torch.include('nnx', 'test-omp.lua')
+torch.include('nn', 'Euclidean.lua')  
+torch.include('nn', 'WeightedEuclidean.lua')  
+torch.include('nn', 'PairwiseDistance.lua')  
+torch.include('nn', 'CosineDistance.lua')  
+torch.include('nn', 'DotProduct.lua')  
 
--- tools:
-torch.include('nnx', 'ConfusionMatrix.lua')
-torch.include('nnx', 'Logger.lua')
-torch.include('nnx', 'Probe.lua')
+torch.include('nn', 'Exp.lua')
+torch.include('nn', 'Log.lua')
+torch.include('nn', 'HardTanh.lua')
+torch.include('nn', 'LogSigmoid.lua')
+torch.include('nn', 'LogSoftMax.lua')
+torch.include('nn', 'Sigmoid.lua')
+torch.include('nn', 'SoftMax.lua')
+torch.include('nn', 'SoftMin.lua')
+torch.include('nn', 'SoftPlus.lua')
+torch.include('nn', 'SoftSign.lua')
+torch.include('nn', 'Tanh.lua')
+torch.include('nn', 'Abs.lua')
+torch.include('nn', 'Power.lua')
+torch.include('nn', 'Square.lua')
+torch.include('nn', 'Sqrt.lua')
+torch.include('nn', 'HardShrink.lua')
+torch.include('nn', 'SoftShrink.lua')
+torch.include('nn', 'Threshold.lua')
 
--- OpenMP module:
-torch.include('nnx', 'OmpModule.lua')
+torch.include('nn', 'LookupTable.lua')
+torch.include('nn', 'SpatialConvolution.lua')
+torch.include('nn', 'SpatialConvolutionMap.lua')
+torch.include('nn', 'SpatialSubSampling.lua')
+torch.include('nn', 'SpatialMaxPooling.lua')
+torch.include('nn', 'SpatialLPPooling.lua')
+torch.include('nn', 'TemporalConvolution.lua')
+torch.include('nn', 'TemporalSubSampling.lua')
+torch.include('nn', 'SpatialSubtractiveNormalization.lua')
+torch.include('nn', 'SpatialDivisiveNormalization.lua')
+torch.include('nn', 'SpatialContrastiveNormalization.lua')
+torch.include('nn', 'SpatialZeroPadding.lua')
 
--- pointwise modules:
-torch.include('nnx', 'Minus.lua')
+torch.include('nn', 'VolumetricConvolution.lua')
 
--- spatial (images) operators:
-torch.include('nnx', 'SpatialLinear.lua')
-torch.include('nnx', 'SpatialClassifier.lua')
-torch.include('nnx', 'SpatialPadding.lua')
-torch.include('nnx', 'SpatialNormalization.lua')
-torch.include('nnx', 'SpatialUpSampling.lua')
-torch.include('nnx', 'SpatialDownSampling.lua')
-torch.include('nnx', 'SpatialReSampling.lua')
-torch.include('nnx', 'SpatialRecursiveFovea.lua')
-torch.include('nnx', 'SpatialFovea.lua')
-torch.include('nnx', 'SpatialPyramid.lua')
-torch.include('nnx', 'SpatialGraph.lua')
-torch.include('nnx', 'SpatialMatching.lua')
-torch.include('nnx', 'SpatialMaxSampling.lua')
-torch.include('nnx', 'SpatialColorTransform.lua')
-torch.include('nnx', 'SpatialConvolutionSparse.lua')
+torch.include('nn', 'ParallelTable.lua')  
+torch.include('nn', 'ConcatTable.lua')  
+torch.include('nn', 'SplitTable.lua')  
+torch.include('nn', 'JoinTable.lua')  
+torch.include('nn', 'CriterionTable.lua')
+torch.include('nn', 'Identity.lua')  
 
--- criterions:
-torch.include('nnx', 'SuperCriterion.lua')
-torch.include('nnx', 'SparseCriterion.lua')
-torch.include('nnx', 'DistNLLCriterion.lua')
-torch.include('nnx', 'KLDivCriterion.lua')
-torch.include('nnx', 'DistMarginCriterion.lua')
-torch.include('nnx', 'SpatialMSECriterion.lua')
-torch.include('nnx', 'SpatialClassNLLCriterion.lua')
-torch.include('nnx', 'SpatialSparseCriterion.lua')
+torch.include('nn', 'Criterion.lua')
+torch.include('nn', 'MSECriterion.lua')
+torch.include('nn', 'MarginCriterion.lua')
+torch.include('nn', 'AbsCriterion.lua')
+torch.include('nn', 'ClassNLLCriterion.lua')
+torch.include('nn', 'DistKLDivCriterion.lua')
+torch.include('nn', 'MultiCriterion.lua')
+torch.include('nn', 'L1HingeEmbeddingCriterion.lua')
+torch.include('nn', 'HingeEmbeddingCriterion.lua')
+torch.include('nn', 'CosineEmbeddingCriterion.lua')
+torch.include('nn', 'MarginRankingCriterion.lua')
+torch.include('nn', 'MultiMarginCriterion.lua')
+torch.include('nn', 'MultiLabelMarginCriterion.lua')
 
--- optimizations:
-torch.include('nnx', 'Optimization.lua')
-torch.include('nnx', 'BatchOptimization.lua')
-torch.include('nnx', 'SNESOptimization.lua')
-torch.include('nnx', 'SGDOptimization.lua')
-torch.include('nnx', 'ASGDOptimization.lua')
-torch.include('nnx', 'LBFGSOptimization.lua')
-torch.include('nnx', 'CGOptimization.lua')
-torch.include('nnx', 'newCGOptimization.lua')
-torch.include('nnx', 'GeneticSGDOptimization.lua')
-torch.include('nnx', 'DiagHessian.lua')
+torch.include('nn', 'StochasticGradient.lua')
 
--- trainers:
-torch.include('nnx', 'Trainer.lua')
-torch.include('nnx', 'OnlineTrainer.lua')
-torch.include('nnx', 'BatchTrainer.lua')
-
--- conversion helper:
-torch.include('nnx', 'Type.lua')
-
--- datasets:
-torch.include('nnx', 'DataSet.lua')
-torch.include('nnx', 'DataList.lua')
-torch.include('nnx', 'DataSetLabelMe.lua')
-
--- nn helpers:
-function nnx.empty(module)
-   if module.modules then
-      -- find submodules in classic containers 'modules'
-      for _,module in ipairs(module.modules) do
-         nnx.empty(module)
-      end
-   else
-      -- find arbitrary submodules
-      for k,entry in pairs(module) do
-         local type = torch.typename(entry)
-         if type and type:find('^nn.') then
-            nnx.empty(entry)
-         elseif type(entry) == 'table' then
-            for i,entry in ipairs(entry) do
-               local type = torch.typename(entry)
-               if type and type:find('^nn.') then
-                  nnx.empty(entry)
-               end
-            end
-         end
-      end
-   end
-   -- empty module
-   if module.output and module.output.resize then 
-      module.output:resize()
-      module.output:storage():resize(0)
-   end
-   if module.gradInput and module.gradInput.resize then 
-      module.gradInput:resize()
-      module.gradInput:storage():resize(0)
-   end
-end
-
-local function get(module, holder, params)
-   -- find submodules in classic containers 'modules'
-   if module.modules then
-      for _,module in ipairs(module.modules) do
-         get(module, holder, params)
-      end
-   else
-      -- find parameters and store them
-      for _,param in ipairs(params) do
-         if module[param] then
-            table.insert(holder, module[param])
-         end
-      end
-   end
-end
-
-function nnx.getParameters(...)
-   -- to hold all parameters found
-   local holder = {}
-   -- call recursive call
-   local modules = {...}
-   for _,module in ipairs(modules) do
-      get(module, holder, {'weight', 'bias'})
-   end
-   -- return all parameters found
-   return holder
-end
-
-function nnx.getGradParameters(...)
-   -- to hold all parameters found
-   local holder = {}
-   -- call recursive call
-   local modules = {...}
-   for _,module in ipairs(modules) do
-      get(module, holder, {'gradWeight', 'gradBias'})
-   end
-   -- return all parameters found
-   return holder
-end
-
-function nnx.getDiagHessianParameters(...)
-   -- to hold all parameters found
-   local holder = {}
-   -- call recursive call
-   local modules = {...}
-   for _,module in ipairs(modules) do
-      get(module, holder, {'diagHessianWeight', 'diagHessianBias'})
-   end
-   -- return all parameters found
-   return holder
-end
-
-function nnx.flattenParameters(parameters)
-   -- already flat ?
-   local flat = true
-   for k = 2,#parameters do
-      if parameters[k]:storage() ~= parameters[k-1]:storage() then
-         flat = false
-         break
-      end
-   end
-   if flat then
-      local nParameters = 0
-      for k,param in ipairs(parameters) do
-         nParameters = nParameters + param:nElement()
-      end
-      flatParameters = parameters[1].new(parameters[1]:storage())
-      if nParameters ~= flatParameters:nElement() then
-         error('<nnx.flattenParameters> weird parameters')
-      end
-      return flatParameters
-   end
-   -- compute offsets of each parameter
-   local offsets = {}
-   local sizes = {}
-   local strides = {}
-   local elements = {}
-   local storageOffsets = {}
-   local params = {}
-   local nParameters = 0
-   for k,param in ipairs(parameters) do
-      table.insert(offsets, nParameters+1)
-      table.insert(sizes, param:size())
-      table.insert(strides, param:stride())
-      table.insert(elements, param:nElement())
-      table.insert(storageOffsets, param:storageOffset())
-      local isView = false
-      for i = 1,k-1 do
-         if param:storage() == parameters[i]:storage() then
-            offsets[k] = offsets[i]
-            if storageOffsets[k] ~= storageOffsets[i] or elements[k] ~= elements[i] then
-               error('<nnx.flattenParameters> cannot flatten shared weights with different structures')
-            end
-            isView = true
-            break
-         end
-      end
-      if not isView then
-         nParameters = nParameters + param:nElement()
-      end
-   end
-   -- create flat vector
-   local flatParameters = parameters[1].new(nParameters)
-   local storage = flatParameters:storage()
-   -- reallocate all parameters in flat vector
-   for i = 1,#parameters do
-      local data = parameters[i]:clone()
-      parameters[i]:set(storage, offsets[i], elements[i]):resize(sizes[i],strides[i]):copy(data)
-      data = nil
-      collectgarbage()
-   end
-   -- cleanup
-   collectgarbage()
-   -- return new flat vector that contains all discrete parameters
-   return flatParameters
-end
+torch.include('nn', 'Jacobian.lua')
+torch.include('nn', 'test.lua')
