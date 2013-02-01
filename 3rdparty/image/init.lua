@@ -29,12 +29,6 @@
 --     July  1, 2011, 7:42PM - import from Torch5 - Clement Farabet
 ----------------------------------------------------------------------
 
-require 'torch'
-require 'sys'
-require 'xlua'
-require 'dok'
-require 'libimage'
-
 ----------------------------------------------------------------------
 -- types lookups
 -- 
@@ -54,175 +48,11 @@ end
 ----------------------------------------------------------------------
 -- save/load in multiple formats
 --
-local function loadPNG(filename, depth, tensortype)
-   if not xlua.require 'libpng' then
-      dok.error('libpng package not found, please install libpng','image.loadPNG')
-   end
-   local MAXVAL = 255
-   local a = template(tensortype).libpng.load(filename)
-   if tensortype ~= 'byte' then
-      a:mul(1/MAXVAL)
-   end
-   if depth and depth == 1 then
-      if a:nDimension() == 2 then
-         -- all good
-      elseif a:size(1) == 3 or a:size(1) == 4 then
-         local b = a.new(a:size(2), a:size(3))
-         image.rgb2y(a:narrow(1,1,3),b)
-         a = b
-      elseif a:size(1) == 2 then
-         a = a:narrow(1,1,1)
-      elseif a:size(1) ~= 1 then
-         dok.error('image loaded has wrong #channels','image.loadPNG')
-      end
-   elseif depth and depth == 3 then
-      if a:size(1) == 3 then
-         -- all good
-      elseif a:size(1) == 4 then
-         a = a:narrow(1,1,3)
-      else
-         dok.error('image loaded has wrong #channels','image.loadPNG')
-      end
-   end
-   return a
-end
-rawset(image, 'loadPNG', loadPNG)
-
-local function savePNG(filename, tensor)
-   if not xlua.require 'libpng' then
-      dok.error('libpng package not found, please install libpng','image.savePNG')
-   end
-   local MAXVAL = 255
-   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
-   a.image.saturate(a) -- bound btwn 0 and 1
-   a:mul(MAXVAL)       -- remap to [0..255]
-   a.libpng.save(filename, a)
-end  
-rawset(image, 'savePNG', savePNG)
-
-function image.getPNGsize(filename)
-   if not xlua.require 'libpng' then
-      dok.error('libpng package not found, please install libpng','image.getPNGsize')
-   end
-   return torch.Tensor().libpng.size(filename)
-end
-
-local function loadJPG(filename, depth, tensortype)
-   if not xlua.require 'libjpeg' then
-      dok.error('libjpeg package not found, please install libjpeg','image.loadJPG')
-   end
-   local MAXVAL = 255
-   local a = template(tensortype).libjpeg.load(filename)
-   if tensortype ~= 'byte' then
-      a:mul(1/MAXVAL)
-   end
-   if depth and depth == 1 then
-      if a:nDimension() == 2 then
-         -- all good
-      elseif a:size(1) == 3 or a:size(1) == 4 then
-         local b = a.new(a:size(2), a:size(3))
-         image.rgb2y(a:narrow(1,1,3),b)
-         a = b
-      elseif a:size(1) == 2 then
-         a = a:narrow(1,1,1)
-      elseif a:size(1) ~= 1 then
-         dok.error('image loaded has wrong #channels','image.loadJPG')
-      end
-   elseif depth and depth == 3 then
-      if a:size(1) == 3 then
-         -- all good
-      elseif a:size(1) == 4 then
-         a = a:narrow(1,1,3)
-      else
-         dok.error('image loaded has wrong #channels','image.loadJPG')
-      end
-   end
-   return a
-end
-rawset(image, 'loadJPG', loadJPG)
-
-local function saveJPG(filename, tensor)
-   if not xlua.require 'libjpeg' then
-      dok.error('libjpeg package not found, please install libjpeg','image.saveJPG')
-   end
-   local MAXVAL = 255
-   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
-   a.image.saturate(a) -- bound btwn 0 and 1
-   a:mul(MAXVAL)       -- remap to [0..255]
-   a.libjpeg.save(filename, a)
-end
-rawset(image, 'saveJPG', saveJPG)
-
-function image.getJPGsize(filename)
-   if not xlua.require 'libjpeg' then
-      dok.error('libjpeg package not found, please install libjpeg','image.getJPGsize')
-   end
-   return torch.Tensor().libjpeg.size(filename)
-end
-
-local function loadPPM(filename, depth, tensortype)
-   require 'libppm'
-   local MAXVAL = 255
-   local a = template(tensortype).libppm.load(filename)
-   if tensortype ~= 'byte' then
-      a:mul(1/MAXVAL)
-   end
-   if depth and depth == 1 then
-      if a:nDimension() == 2 then
-         -- all good
-      elseif a:size(1) == 3 or a:size(1) == 4 then
-         local b = a.new(a:size(2), a:size(3))
-         image.rgb2y(a:narrow(1,1,3),b)
-         a = b
-      elseif a:size(1) == 2 then
-         a = a:narrow(1,1,1)
-      elseif a:size(1) ~= 1 then
-         dok.error('image loaded has wrong #channels','image.loadPPM')
-      end
-   elseif depth and depth == 3 then
-      if a:size(1) == 3 then
-         -- all good
-      elseif a:size(1) == 4 then
-         a = a:narrow(1,1,3)
-      else
-         dok.error('image loaded has wrong #channels','image.loadPPM')
-      end
-   end
-   return a
-end
-rawset(image, 'loadPPM', loadPPM)
-
-local function savePPM(filename, tensor)
-   require 'libppm'
-   if tensor:nDimension() ~= 3 or tensor:size(1) ~= 3 then
-      dok.error('can only save 3xHxW images as PPM', 'image.savePPM')
-   end
-   local MAXVAL = 255
-   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
-   a.image.saturate(a) -- bound btwn 0 and 1
-   a:mul(MAXVAL)       -- remap to [0..255]
-   a.libppm.save(filename, a)
-end
-rawset(image, 'savePPM', savePPM)
-
-local function savePGM(filename, tensor)
-   require 'libppm'
-   if tensor:nDimension() == 3 and tensor:size(1) ~= 1 then
-      dok.error('can only save 1xHxW or HxW images as PGM', 'image.savePGM')
-   end
-   local MAXVAL = 255
-   local a = torch.Tensor():resize(tensor:size()):copy(tensor)
-   a.image.saturate(a) -- bound btwn 0 and 1
-   a:mul(MAXVAL)       -- remap to [0..255]
-   a.libppm.save(filename, a)
-end
-rawset(image, 'savePGM', savePGM)
-
 local filetypes = {
-   jpg = {loader = image.loadJPG, saver = image.saveJPG},
-   png = {loader = image.loadPNG, saver = image.savePNG},
-   ppm = {loader = image.loadPPM, saver = image.savePPM},
-   pgm = {loader = image.loadPGM, saver = image.savePGM}
+   jpg = {loader = 'loadJPG', saver = 'saveJPG'},
+   png = {loader = 'loadPNG', saver = 'savePNG'},
+   ppm = {loader = 'loadPPM', saver = 'savePPM'},
+   pgm = {loader = 'loadPGM', saver = 'savePGM'}
 }
 
 filetypes['JPG']  = filetypes['jpg']
@@ -250,7 +80,7 @@ local function load(filename, depth, tensortype)
    local ext = string.match(filename,'%.(%a+)$')
    local tensor
    if image.is_supported(ext) then
-      tensor = filetypes[ext].loader(filename, depth, tensortype)
+      tensor = image[filetypes[ext].loader](filename, depth, tensortype)
    else
       dok.error('unknown image type: ' .. ext, 'image.load')
    end
@@ -269,7 +99,7 @@ local function save(filename, tensor)
    end
    local ext = string.match(filename,'%.(%a+)$')
    if image.is_supported(ext) then
-      tensor = filetypes[ext].saver(filename, tensor)
+      tensor = image[filetypes[ext].saver](filename, tensor)
    else
       dok.error('unknown image type: ' .. ext, 'image.save')
    end

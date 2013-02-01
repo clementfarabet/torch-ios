@@ -32,19 +32,8 @@
 --     July  5, 2011, 8:51PM - import from Torch5 - Clement Farabet
 ----------------------------------------------------------------------
 
-require 'torch'
-require 'xlua'
-require 'nn'
-
 -- create global nnx table:
 nnx = {}
-
--- c lib:
-require 'libnnx'
-
--- for testing:
-torch.include('nnx', 'test-all.lua')
-torch.include('nnx', 'test-omp.lua')
 
 -- tools:
 torch.include('nnx', 'Probe.lua')
