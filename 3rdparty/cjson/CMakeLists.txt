@@ -1,0 +1,10 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6 FATAL_ERROR)
+CMAKE_POLICY(VERSION 2.6)
+
+FIND_PACKAGE(Torch REQUIRED)
+
+SET(src lua_cjson.c strbuf.c fpconv.c)
+SET(luasrc )
+
+ADD_TORCH_PACKAGE(cjson "${src}" "${luasrc}" "Lua-CJSON")
+TARGET_LINK_LIBRARIES(cjson luaT TH)
