@@ -17,14 +17,16 @@ function Linear:reset(stdv)
    else
       stdv = 1./math.sqrt(self.weight:size(2))
    end
-
-   -- we do this so the initialization is exactly
-   -- the same than in previous torch versions
-   for i=1,self.weight:size(1) do
-      self.weight:select(1, i):apply(function()
-                                        return torch.uniform(-stdv, stdv)
-                                     end)
-      self.bias[i] = torch.uniform(-stdv, stdv)
+   if nn.oldSeed then
+      for i=1,self.weight:size(1) do
+         self.weight:select(1, i):apply(function()
+            return torch.uniform(-stdv, stdv)
+         end)
+         self.bias[i] = torch.uniform(-stdv, stdv)
+      end
+   else
+      self.weight:uniform(-stdv, stdv)
+      self.bias:uniform(-stdv, stdv)
    end
 end
 
@@ -50,11 +52,14 @@ end
 function Linear:updateGradInput(input, gradOutput)
    if self.gradInput then
 
+      local nElement = self.gradInput:nElement()
+      self.gradInput:resizeAs(input)
+      if self.gradInput:nElement() ~= nElement then
+         self.gradInput:zero()
+      end
       if input:dim() == 1 then
-         self.gradInput:resizeAs(input)
          self.gradInput:addmv(0, 1, self.weight:t(), gradOutput)
       elseif input:dim() == 2 then
-         self.gradInput:resizeAs(input)
          self.gradInput:addmm(0, 1, gradOutput, self.weight)
       end
 
