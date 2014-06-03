@@ -3,7 +3,7 @@
 # support alternative targets
 MESSAGE(STATUS "Targetting ARM7 architecture")
 
-set(IPHONE_SDK "6.0")
+set(IPHONE_SDK "7.1")
 set(IPHONE_ROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer")
 set(IPHONE_SDK_ROOT "${IPHONE_ROOT}/SDKs/iPhoneOS${IPHONE_SDK}.sdk")
 
@@ -16,14 +16,14 @@ set(CMAKE_SYSTEM_NAME "GNU")
 set(CMAKE_SYSTEM_PROCESSOR armv7)
 set(CMAKE_OSX_ARCHITECTURES armv7)
 
-set(CMAKE_C_COMPILER ${IPHONE_ROOT}/usr/bin/gcc)
-set(CMAKE_CXX_COMPILER ${IPHONE_ROOT}/usr/bin/g++)
+set(CMAKE_C_COMPILER /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang)
+set(CMAKE_CXX_COMPILER /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++)
 
 set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE)
 
 add_definitions("-arch armv7 -mfpu=neon -D__IPHONE__ -D__NEON__ -pipe -no-cpp-precomp --sysroot=${IPHONE_SDK_ROOT} -miphoneos-version-min=${IPHONE_SDK}")
 
-set(CMAKE_C_LINK_FLAGS "-arch armv7 --isysroot=${IPHONE_SDK_ROOT} -miphoneos-version-min=${IPHONE_SDK} -L${IPHONE_SDK_ROOT}/usr/lib -L${IPHONE_SDK_ROOT}/usr/lib/system")
+set(CMAKE_C_LINK_FLAGS "-arch armv7 -miphoneos-version-min=${IPHONE_SDK} -L${IPHONE_SDK_ROOT}/usr/lib -L${IPHONE_SDK_ROOT}/usr/lib/system")
 set(CMAKE_CXX_LINK_FLAGS ${CMAKE_C_LINK_FLAGS})
 
 include_directories("${IPHONE_SDK_ROOT}/usr/include")
