@@ -26,6 +26,7 @@ os.execute[[
    cp build/3rdparty/imgraph/libimgraph.a framework/lib/
    cp build/3rdparty/imgraph/pink/libpink.a framework/lib/
    cp build/3rdparty/imgraph/graphcuts/libgraphcuts.a framework/lib/
+   cp build/3rdparty/cjson/libcjson.a framework/lib/
 
    path=`which torch-lua`
    path=`dirname $path`
