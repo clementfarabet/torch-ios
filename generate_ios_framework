@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 SCRIPT_DIR=$( cd $(dirname $0) ; pwd -P )
 XCODE_ROOT=`xcode-select -print-path`
 IPHONE_SDKVERSION=`xcodebuild -showsdks | grep iphoneos | egrep "[[:digit:]]+\.[[:digit:]]+" -o | tail -1`
@@ -12,8 +13,13 @@ configure_exports() {
     else
         DEV_CMD=$SIM_DEV_CMD
     fi
-    export CXX="$DEV_CMD clang++ -arch $1 $EXTRA_FLAGS"
-    export CC="$DEV_CMD clang -arch $1 $EXTRA_FLAGS"
+    if [[ $1 = armv7* ]]; then
+        NEON_FLAGS=" -D__NEON__ -mfpu=neon"
+    else
+        NEON_FLAGS=""
+    fi
+    export CXX="$DEV_CMD clang++ -arch $1 $EXTRA_FLAGS $NEON_FLAGS"
+    export CC="$DEV_CMD clang -arch $1 $EXTRA_FLAGS $NEON_FLAGS"
 
     XCMAKE=`$DEV_CMD --find make`
     XCPATH=`dirname $XCMAKE`
