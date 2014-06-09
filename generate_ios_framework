@@ -1,59 +1,112 @@
-#!/usr/bin/env torch-lua
+#!/bin/bash
+SCRIPT_DIR=$( cd $(dirname $0) ; pwd -P )
+XCODE_ROOT=`xcode-select -print-path`
+IPHONE_SDKVERSION=`xcodebuild -showsdks | grep iphoneos | egrep "[[:digit:]]+\.[[:digit:]]+" -o | tail -1`
+ARM_DEV_CMD="xcrun --sdk iphoneos"
+SIM_DEV_CMD="xcrun --sdk iphonesimulator"
+EXTRA_FLAGS="-miphoneos-version-min=6.0"
 
-print '==> building lua and 3rd party packages as static libs'
-os.execute[[
-   unset CC
-   unset CXX
-   rm -f build/CMakeCache.txt
-   mkdir -p build
-   cd build
-   cmake ..
-   make
-]]
+configure_exports() {
+    if [[ $1 = arm* ]]; then
+        DEV_CMD=$ARM_DEV_CMD
+    else
+        DEV_CMD=$SIM_DEV_CMD
+    fi
+    export CXX="$DEV_CMD clang++ -arch $1 $EXTRA_FLAGS"
+    export CC="$DEV_CMD clang -arch $1 $EXTRA_FLAGS"
 
-print '==> exporting libs + headers'
-os.execute[[
-   mkdir -p framework/lib
-   mkdir -p framework/include
+    XCMAKE=`$DEV_CMD --find make`
+    XCPATH=`dirname $XCMAKE`
+    export PATH="$XCPATH:$PATH"
+    XCRANLIB=`$DEV_CMD --find ranlib`
+    XCPATH=`dirname $XCRANLIB`
+    export PATH="$XCPATH:$PATH"
+}
 
-   cp build/exe/lua/libtorch-lua-static.a framework/lib/
-   cp build/3rdparty/nn/libnn.a framework/lib/
-   cp build/lib/luaT/libluaT.a framework/lib/
-   cp build/lib/TH/libTH.a framework/lib/
-   cp build/pkg/torch/libtorch.a framework/lib/
-   cp build/3rdparty/image/libimage.a framework/lib/
-   cp build/3rdparty/nnx/libnnx.a framework/lib/
-   cp build/3rdparty/imgraph/libimgraph.a framework/lib/
-   cp build/3rdparty/imgraph/pink/libpink.a framework/lib/
-   cp build/3rdparty/imgraph/graphcuts/libgraphcuts.a framework/lib/
-   cp build/3rdparty/cjson/libcjson.a framework/lib/
 
-   path=`which torch-lua`
-   path=`dirname $path`
-   cp -r $path/../include/torch/* framework/include/
-]]
+generate_arch() {
+    configure_exports $1
+    rm -rf $SCRIPT_DIR/build
+    mkdir -p $SCRIPT_DIR/build
+    cd $SCRIPT_DIR/build
+    cmake .. -DCMAKE_INSTALL_PREFIX="$SCRIPT_DIR/installed/"
+    make install
+    cd $SCRIPT_DIR
 
-print '==> exporting Lua sources'
-os.execute[[
-   mkdir -p framework/lua/torch
-   cp -r pkg/torch/*.lua framework/lua/torch/
+    rm -rf $SCRIPT_DIR/framework/lua
+    rm -rf $SCRIPT_DIR/framework/lib
+    rm -rf $SCRIPT_DIR/framework/include
+    
+    mkdir -p $SCRIPT_DIR/framework/lua
+    mkdir -p $SCRIPT_DIR/framework/lib/$1
+    mkdir -p $SCRIPT_DIR/framework/include
 
-   mkdir -p framework/lua/dok
-   cp -r pkg/dok/*.lua framework/lua/dok/
+    # copy includes
+    cp -r $SCRIPT_DIR/installed/include/torch/* $SCRIPT_DIR/framework/include
+    rm -rf $SCRIPT_DIR/installed/
+    
+    # copy libs
+    cp $SCRIPT_DIR/build/exe/lua/libtorch-lua-static.a       $SCRIPT_DIR/framework/lib/$1/
+    cp $SCRIPT_DIR/build/lib/luaT/libluaT.a                  $SCRIPT_DIR/framework/lib/$1
+    cp $SCRIPT_DIR/build/lib/TH/libTH.a                      $SCRIPT_DIR/framework/lib/$1
+    cp $SCRIPT_DIR/build/pkg/torch/libtorch.a                $SCRIPT_DIR/framework/lib/$1
+    
+    cp $SCRIPT_DIR/build/3rdparty/nn/libnn.a                 $SCRIPT_DIR/framework/lib/$1
+    cp $SCRIPT_DIR/build/3rdparty/image/libimage.a           $SCRIPT_DIR/framework/lib/$1
+    cp $SCRIPT_DIR/build/3rdparty/nnx/libnnx.a               $SCRIPT_DIR/framework/lib/$1
+    cp $SCRIPT_DIR/build/3rdparty/cjson/libcjson.a           $SCRIPT_DIR/framework/lib/$1
+    
+    # copy lua scripts
+    mkdir -p $SCRIPT_DIR/framework/lua/torch
+    cp -r $SCRIPT_DIR/pkg/torch/*.lua $SCRIPT_DIR/framework/lua/torch/
 
-   mkdir -p framework/lua/nn
-   cp -r 3rdparty/nn/*.lua framework/lua/nn/
+    mkdir -p $SCRIPT_DIR/framework/lua/dok
+    cp -r $SCRIPT_DIR/pkg/dok/*.lua $SCRIPT_DIR/framework/lua/dok/
+    
+    mkdir -p $SCRIPT_DIR/framework/lua/nn
+    cp -r $SCRIPT_DIR/3rdparty/nn/*.lua $SCRIPT_DIR/framework/lua/nn/
+    
+    mkdir -p $SCRIPT_DIR/framework/lua/nnx
+    cp -r $SCRIPT_DIR/3rdparty/nnx/*.lua $SCRIPT_DIR/framework/lua/nnx/
+    
+    mkdir -p $SCRIPT_DIR/framework/lua/image
+    cp -r $SCRIPT_DIR/3rdparty/image/*.lua $SCRIPT_DIR/framework/lua/image/
+    
+    
+}
 
-   mkdir -p framework/lua/nnx
-   cp -r 3rdparty/nnx/*.lua framework/lua/nnx/
+lipo_libs() {
+    $ARM_DEV_CMD lipo -create \
+	$SCRIPT_DIR/framework/lib/armv7/$1  \
+	$SCRIPT_DIR/framework/lib/armv7s/$1 \
+	$SCRIPT_DIR/framework/lib/arm64/$1  \
+	$SCRIPT_DIR/framework/lib/i386/$1   \
+	$SCRIPT_DIR/framework/lib/x86_64/$1 \
+	-output $SCRIPT_DIR/framework/lib/$1
+}
 
-   mkdir -p framework/lua/image
-   cp -r 3rdparty/image/*.lua framework/lua/image/
+echo "generating torch"
+generate_arch armv7
+generate_arch armv7s
+generate_arch arm64
+generate_arch i386
+generate_arch x86_64
 
-   mkdir -p framework/lua/imgraph
-   cp -r 3rdparty/imgraph/*.lua framework/lua/imgraph/
-]]
+echo "LIPOing libraries"
+# lipo the libraries
+lipo_libs libtorch-lua-static.a
+lipo_libs libluaT.a
+lipo_libs libTH.a
+lipo_libs libtorch.a
+lipo_libs libnn.a
+lipo_libs libimage.a
+lipo_libs libnnx.a
+lipo_libs libcjson.a
 
-print '==> exported complete framework in framework/'
-print '    just drag the whole dir into your iOS project'
+echo "cleaning up"
+rm -rf $SCRIPT_DIR/framework/lib/arm*
+rm -rf $SCRIPT_DIR/framework/lib/i386
+rm -rf $SCRIPT_DIR/framework/lib/x86_64
 
+echo "==> exported complete framework in framework/"
+echo "    just drag the whole dir into your iOS project"
