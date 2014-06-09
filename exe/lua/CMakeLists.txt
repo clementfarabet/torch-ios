@@ -13,7 +13,7 @@ IF(NOT Lua_IS_SUBPROJECT)
   INCLUDE(LuaPaths)
 ENDIF()
 
-FIND_PACKAGE(Readline)
+# FIND_PACKAGE(Readline)
 
 INCLUDE(CheckLibraryExists)
 INCLUDE(CheckSymbolExists)
@@ -32,7 +32,7 @@ IF(READLINE_FOUND)
   CHECK_LIBRARY_EXISTS(${READLINE_readline_LIBRARY} readline "" LUA_USE_READLINE)
 ENDIF(READLINE_FOUND)
 
-FIND_LIBRARY(DL_LIBRARY "dl")
+# FIND_LIBRARY(DL_LIBRARY "dl")
 IF(DL_LIBRARY)
   SET(CMAKE_REQUIRED_LIBRARIES ${DL_LIBRARY})
 ENDIF(DL_LIBRARY)
@@ -65,19 +65,10 @@ SET(_lua_lib_src
 SET(_lua_src src/lua.c)
 SET(_luac_src src/luac.c src/print.c)
 
-# Compile library as c++
-SET_SOURCE_FILES_PROPERTIES(${_lua_lib_src} ${_lua_src} ${_luac_src} PROPERTIES
-  OBJECT_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/luaconf.h"
-  LANGUAGE CXX)
-
-# Make sure Clang does not complain
-INCLUDE(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-x c++" CXX_HAS_XCXX)
-IF(CXX_HAS_XCXX)
-  SET_SOURCE_FILES_PROPERTIES(${_lua_lib_src} ${_lua_src} ${_luac_src} PROPERTIES
-    COMPILE_FLAGS "-x c++"
-    )
-ENDIF(CXX_HAS_XCXX)
+# Compile library as C 
+#SET_SOURCE_FILES_PROPERTIES(${_lua_lib_src} ${_lua_src} ${_luac_src} PROPERTIES
+#  OBJECT_DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/luaconf.h"
+#  LANGUAGE CXX)
 
 # Compile static executables for dealing with compile time.
 ADD_LIBRARY(liblua-static STATIC ${_lua_lib_src})

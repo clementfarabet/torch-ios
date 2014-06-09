@@ -32,7 +32,7 @@ table.insert(js, [[
                          for (var i=6; i>=0; i=i-1) { 
                             $(".level"+i).show(); 
                          };
-			 $(window).scrollTop(0);
+			                $(window).scrollTop(0);
                    };
 
                    // on window resize
