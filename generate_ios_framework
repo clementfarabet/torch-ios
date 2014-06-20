@@ -137,11 +137,14 @@ cp $SCRIPT_DIR/framework/lib/libtorch.a \
     $SCRIPT_DIR/Torch.framework/Versions/A/Torch
 cp -r $SCRIPT_DIR/framework/include/* \
     $SCRIPT_DIR/Torch.framework/Versions/A/Headers
+cp -r $SCRIPT_DIR/framework/lua \
+    $SCRIPT_DIR/Torch.framework/Versions/A/Resources
 cd $SCRIPT_DIR/Torch.framework/Versions
 ln -s A Current
 cd $SCRIPT_DIR/Torch.framework
 ln -s Versions/Current/Torch Torch
 ln -s Versions/Current/Headers Headers
+ln -s Versions/Current/Resources Resources
 
 echo "creating header files"
 HEADER=$SCRIPT_DIR/Torch.framework/Versions/A/Headers/Torch.h
