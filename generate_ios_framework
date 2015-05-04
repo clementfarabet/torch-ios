@@ -35,7 +35,8 @@ generate_arch() {
     rm -rf $SCRIPT_DIR/build
     mkdir -p $SCRIPT_DIR/build
     cd $SCRIPT_DIR/build
-    cmake .. -DCMAKE_INSTALL_PREFIX="$SCRIPT_DIR/installed/"
+    SROOT=`$DEV_CMD --show-sdk-path`
+    cmake .. -DCMAKE_INSTALL_PREFIX="$SCRIPT_DIR/installed/" -DCMAKE_OSX_SYSROOT=$SROOT
     make install
     cd $SCRIPT_DIR
     
