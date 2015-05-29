@@ -7,7 +7,7 @@ function Add:__init(inputSize,scalar)
    if scalar then size=1 end
    self.bias = torch.Tensor(size)
    self.gradBias = torch.Tensor(size)
-     
+
    -- state
    self.gradInput:resize(inputSize)
    self.output:resize(inputSize) 
@@ -28,10 +28,13 @@ function Add:reset(stdv)
 end
 
 function Add:updateOutput(input)
-   self.output:copy(input);
-   if self.gradBias:size(1)==1 then
+
+   self.output:resizeAs(input):copy(input);
+   if self.bias:size(1)==1 then
+
      self.output:add(self.bias[1]);
    else
+
      self.output:add(self.bias);
    end
    return self.output
