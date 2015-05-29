@@ -52,6 +52,7 @@ torch.include('nn','Sqrt.lua')
 torch.include('nn','HardShrink.lua')
 torch.include('nn','SoftShrink.lua')
 torch.include('nn','Threshold.lua')
+torch.include('nn','ReLU.lua')
 
 torch.include('nn','LookupTable.lua')
 torch.include('nn','SpatialConvolution.lua')
