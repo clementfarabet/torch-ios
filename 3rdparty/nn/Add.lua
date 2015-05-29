@@ -4,13 +4,11 @@ function Add:__init(inputSize,scalar)
    parent.__init(self)
   
    local size = inputSize
-   addSize = size:copy();
    if scalar then size=1 end
    self.bias = torch.Tensor(size)
    self.gradBias = torch.Tensor(size)
-     
+
    -- state
-   print("Add input size ".. inputSize)
    self.gradInput:resize(inputSize)
    self.output:resize(inputSize) 
 
