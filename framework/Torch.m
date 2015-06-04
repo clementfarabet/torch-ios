@@ -13,13 +13,27 @@
 
 - (void)addLuaPackagePathForBundlePath:(NSString *)bundlePath subdirectory:(NSString *)subdirectory
 {
+  // Add path for finding individual lua files
   NSMutableString *pathToAdd = [NSMutableString stringWithString:bundlePath];
   if (subdirectory.length > 0) {
     [pathToAdd appendString:@"/"];
     [pathToAdd appendString:subdirectory];
   }
   [pathToAdd appendString:@"/?.lua"];
+  [self appendLuaPackagePathWithPath:pathToAdd];
   
+  // Add path for finding packages that are prepared with init.lua
+  pathToAdd = [NSMutableString stringWithString:bundlePath];
+  if (subdirectory.length > 0) {
+    [pathToAdd appendString:@"/"];
+    [pathToAdd appendString:subdirectory];
+  }
+  [pathToAdd appendString:@"/?/init.lua"];
+  [self appendLuaPackagePathWithPath:pathToAdd];
+}
+
+- (void)appendLuaPackagePathWithPath:(NSString *)pathToAdd
+{
   lua_getglobal(L, "package");
   lua_getfield(L, -1, "path");
   NSString *packagePath = [NSString stringWithUTF8String:lua_tostring(L, -1)];
@@ -60,6 +74,7 @@
   L = lua_open();
   luaL_openlibs(L);
 
+  [self addLuaPackagePathForBundlePath:[[NSBundle mainBundle] resourcePath] subdirectory:nil];
   NSString *frameworkResourcesPath = [self bundleResourcesPathForFrameworkName:@"Torch.framework"];
   [self addLuaPackagePathForBundlePath:frameworkResourcesPath subdirectory:nil];
 
