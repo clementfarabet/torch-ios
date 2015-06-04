@@ -4,11 +4,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "lua.h"
-#import "TH/TH.h"
-#import "luaT.h"
-#import "lualib.h"
-#import "lauxlib.h"
+#import <Torch/lua.h>
+#import <Torch/TH/TH.h>
+#import <Torch/luaT.h>
+#import <Torch/lualib.h>
+#import <Torch/lauxlib.h>
 
 int luaopen_libtorch(lua_State *L);
 int luaopen_libnn(lua_State *L);
