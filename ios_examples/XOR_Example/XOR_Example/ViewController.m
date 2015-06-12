@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#include <Torch/Torch.h>
+#import "Torch.h"
 
 @interface ViewController ()
 
@@ -16,12 +18,14 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
+  Torch *t = [Torch new];
+  [t initialize];
+  [t runMain:@"main" inFolder:@"xor_lua"];
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
   [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
 }
 
 @end

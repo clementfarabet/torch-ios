@@ -14,6 +14,11 @@
 		3C6963A71B2A5C6300E39843 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963A61B2A5C6300E39843 /* Images.xcassets */; };
 		3C6963AA1B2A5C6300E39843 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963A81B2A5C6300E39843 /* LaunchScreen.xib */; };
 		3C6963B61B2A5C6300E39843 /* XOR_ExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963B51B2A5C6300E39843 /* XOR_ExampleTests.m */; };
+		3C6963C01B2A5CAE00E39843 /* Torch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6963BF1B2A5CAE00E39843 /* Torch.framework */; };
+		3C6963C31B2A5CD000E39843 /* Torch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963C21B2A5CD000E39843 /* Torch.m */; };
+		3C6963C51B2A5CE000E39843 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6963C41B2A5CE000E39843 /* Accelerate.framework */; };
+		3C6963C71B2A5D1300E39843 /* lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C61B2A5D1300E39843 /* lua */; };
+		3C6963C91B2A5E6100E39843 /* xor_lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C81B2A5E6100E39843 /* xor_lua */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +45,12 @@
 		3C6963AF1B2A5C6300E39843 /* XOR_ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XOR_ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C6963B41B2A5C6300E39843 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3C6963B51B2A5C6300E39843 /* XOR_ExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XOR_ExampleTests.m; sourceTree = "<group>"; };
+		3C6963BF1B2A5CAE00E39843 /* Torch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Torch.framework; sourceTree = "<group>"; };
+		3C6963C11B2A5CD000E39843 /* Torch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Torch.h; path = ../../../framework/Torch.h; sourceTree = "<group>"; };
+		3C6963C21B2A5CD000E39843 /* Torch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Torch.m; path = ../../../framework/Torch.m; sourceTree = "<group>"; };
+		3C6963C41B2A5CE000E39843 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		3C6963C61B2A5D1300E39843 /* lua */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lua; path = ../../../framework/lua; sourceTree = "<group>"; };
+		3C6963C81B2A5E6100E39843 /* xor_lua */ = {isa = PBXFileReference; lastKnownFileType = folder; path = xor_lua; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C6963C51B2A5CE000E39843 /* Accelerate.framework in Frameworks */,
+				3C6963C01B2A5CAE00E39843 /* Torch.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +76,7 @@
 		3C69638D1B2A5C6300E39843 = {
 			isa = PBXGroup;
 			children = (
+				3C6963C41B2A5CE000E39843 /* Accelerate.framework */,
 				3C6963981B2A5C6300E39843 /* XOR_Example */,
 				3C6963B21B2A5C6300E39843 /* XOR_ExampleTests */,
 				3C6963971B2A5C6300E39843 /* Products */,
@@ -81,10 +95,15 @@
 		3C6963981B2A5C6300E39843 /* XOR_Example */ = {
 			isa = PBXGroup;
 			children = (
+				3C6963BF1B2A5CAE00E39843 /* Torch.framework */,
 				3C69639D1B2A5C6300E39843 /* AppDelegate.h */,
 				3C69639E1B2A5C6300E39843 /* AppDelegate.m */,
 				3C6963A01B2A5C6300E39843 /* ViewController.h */,
 				3C6963A11B2A5C6300E39843 /* ViewController.m */,
+				3C6963C11B2A5CD000E39843 /* Torch.h */,
+				3C6963C21B2A5CD000E39843 /* Torch.m */,
+				3C6963C81B2A5E6100E39843 /* xor_lua */,
+				3C6963C61B2A5D1300E39843 /* lua */,
 				3C6963A31B2A5C6300E39843 /* Main.storyboard */,
 				3C6963A61B2A5C6300E39843 /* Images.xcassets */,
 				3C6963A81B2A5C6300E39843 /* LaunchScreen.xib */,
@@ -200,6 +219,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C6963A51B2A5C6300E39843 /* Main.storyboard in Resources */,
+				3C6963C91B2A5E6100E39843 /* xor_lua in Resources */,
+				3C6963C71B2A5D1300E39843 /* lua in Resources */,
 				3C6963AA1B2A5C6300E39843 /* LaunchScreen.xib in Resources */,
 				3C6963A71B2A5C6300E39843 /* Images.xcassets in Resources */,
 			);
@@ -221,6 +242,7 @@
 			files = (
 				3C6963A21B2A5C6300E39843 /* ViewController.m in Sources */,
 				3C69639F1B2A5C6300E39843 /* AppDelegate.m in Sources */,
+				3C6963C31B2A5CD000E39843 /* Torch.m in Sources */,
 				3C69639C1B2A5C6300E39843 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -349,6 +371,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/XOR_Example",
+				);
 				INFOPLIST_FILE = XOR_Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -359,6 +385,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/XOR_Example",
+				);
 				INFOPLIST_FILE = XOR_Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
