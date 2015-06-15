@@ -14,12 +14,12 @@
 		3C6963A71B2A5C6300E39843 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963A61B2A5C6300E39843 /* Images.xcassets */; };
 		3C6963AA1B2A5C6300E39843 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963A81B2A5C6300E39843 /* LaunchScreen.xib */; };
 		3C6963B61B2A5C6300E39843 /* XOR_ExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963B51B2A5C6300E39843 /* XOR_ExampleTests.m */; };
-		3C6963C01B2A5CAE00E39843 /* Torch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6963BF1B2A5CAE00E39843 /* Torch.framework */; };
 		3C6963C31B2A5CD000E39843 /* Torch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963C21B2A5CD000E39843 /* Torch.m */; };
 		3C6963C51B2A5CE000E39843 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6963C41B2A5CE000E39843 /* Accelerate.framework */; };
 		3C6963C71B2A5D1300E39843 /* lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C61B2A5D1300E39843 /* lua */; };
 		3C6963C91B2A5E6100E39843 /* xor_lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C81B2A5E6100E39843 /* xor_lua */; };
 		3C6963CC1B2F7D0000E39843 /* XORClassifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */; };
+		F9489EC31B2F8E6B003102F4 /* Torch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9489EC21B2F8E6B003102F4 /* Torch.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +46,6 @@
 		3C6963AF1B2A5C6300E39843 /* XOR_ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XOR_ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C6963B41B2A5C6300E39843 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3C6963B51B2A5C6300E39843 /* XOR_ExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XOR_ExampleTests.m; sourceTree = "<group>"; };
-		3C6963BF1B2A5CAE00E39843 /* Torch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Torch.framework; sourceTree = "<group>"; };
 		3C6963C11B2A5CD000E39843 /* Torch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Torch.h; path = ../../../framework/Torch.h; sourceTree = "<group>"; };
 		3C6963C21B2A5CD000E39843 /* Torch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Torch.m; path = ../../../framework/Torch.m; sourceTree = "<group>"; };
 		3C6963C41B2A5CE000E39843 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -54,6 +53,7 @@
 		3C6963C81B2A5E6100E39843 /* xor_lua */ = {isa = PBXFileReference; lastKnownFileType = folder; path = xor_lua; sourceTree = "<group>"; };
 		3C6963CA1B2F7D0000E39843 /* XORClassifyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XORClassifyObject.h; sourceTree = "<group>"; };
 		3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XORClassifyObject.m; sourceTree = "<group>"; };
+		F9489EC21B2F8E6B003102F4 /* Torch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Torch.framework; path = ../../../Torch.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +62,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C6963C51B2A5CE000E39843 /* Accelerate.framework in Frameworks */,
-				3C6963C01B2A5CAE00E39843 /* Torch.framework in Frameworks */,
+				F9489EC31B2F8E6B003102F4 /* Torch.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +98,7 @@
 		3C6963981B2A5C6300E39843 /* XOR_Example */ = {
 			isa = PBXGroup;
 			children = (
-				3C6963BF1B2A5CAE00E39843 /* Torch.framework */,
+				F9489EC21B2F8E6B003102F4 /* Torch.framework */,
 				3C69639D1B2A5C6300E39843 /* AppDelegate.h */,
 				3C69639E1B2A5C6300E39843 /* AppDelegate.m */,
 				3C6963A01B2A5C6300E39843 /* ViewController.h */,
@@ -380,6 +380,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/XOR_Example",
+					"/Users/woffle/Development/torch-woffle-ios",
 				);
 				INFOPLIST_FILE = XOR_Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -394,6 +395,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/XOR_Example",
+					"/Users/woffle/Development/torch-woffle-ios",
 				);
 				INFOPLIST_FILE = XOR_Example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
