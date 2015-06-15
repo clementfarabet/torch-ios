@@ -7,9 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#include <Torch/Torch.h>
+#import "Torch.h"
+#import "XORClassifyObject.h"
 
 @interface ViewController : UIViewController
 
+@property (nonatomic, strong) Torch *t;
+@property (weak, nonatomic) IBOutlet UILabel *answerLabel;
+@property (weak, nonatomic) IBOutlet UITextField *valueOneTextfield;
+@property (weak, nonatomic) IBOutlet UITextField *valueTwoTextField;
 
 @end
 

@@ -19,6 +19,7 @@
 		3C6963C51B2A5CE000E39843 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6963C41B2A5CE000E39843 /* Accelerate.framework */; };
 		3C6963C71B2A5D1300E39843 /* lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C61B2A5D1300E39843 /* lua */; };
 		3C6963C91B2A5E6100E39843 /* xor_lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C81B2A5E6100E39843 /* xor_lua */; };
+		3C6963CC1B2F7D0000E39843 /* XORClassifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		3C6963C41B2A5CE000E39843 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		3C6963C61B2A5D1300E39843 /* lua */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lua; path = ../../../framework/lua; sourceTree = "<group>"; };
 		3C6963C81B2A5E6100E39843 /* xor_lua */ = {isa = PBXFileReference; lastKnownFileType = folder; path = xor_lua; sourceTree = "<group>"; };
+		3C6963CA1B2F7D0000E39843 /* XORClassifyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XORClassifyObject.h; sourceTree = "<group>"; };
+		3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XORClassifyObject.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +105,8 @@
 				3C6963A11B2A5C6300E39843 /* ViewController.m */,
 				3C6963C11B2A5CD000E39843 /* Torch.h */,
 				3C6963C21B2A5CD000E39843 /* Torch.m */,
+				3C6963CA1B2F7D0000E39843 /* XORClassifyObject.h */,
+				3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */,
 				3C6963C81B2A5E6100E39843 /* xor_lua */,
 				3C6963C61B2A5D1300E39843 /* lua */,
 				3C6963A31B2A5C6300E39843 /* Main.storyboard */,
@@ -242,6 +247,7 @@
 			files = (
 				3C6963A21B2A5C6300E39843 /* ViewController.m in Sources */,
 				3C69639F1B2A5C6300E39843 /* AppDelegate.m in Sources */,
+				3C6963CC1B2F7D0000E39843 /* XORClassifyObject.m in Sources */,
 				3C6963C31B2A5CD000E39843 /* Torch.m in Sources */,
 				3C69639C1B2A5C6300E39843 /* main.m in Sources */,
 			);
@@ -448,6 +454,7 @@
 				3C6963BB1B2A5C6300E39843 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3C6963BC1B2A5C6300E39843 /* Build configuration list for PBXNativeTarget "XOR_ExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -456,6 +463,7 @@
 				3C6963BE1B2A5C6300E39843 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

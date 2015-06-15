@@ -108,4 +108,9 @@
   [self require:fileName inFolder:folderName];
 }
 
+- (lua_State *)getLuaState
+{
+  return L;
+}
+
 @end
