@@ -6,9 +6,14 @@
 
 @implementation Torch
 
-- (NSString *)bundleResourcesPathFolderName:(NSString *)folderName
+- (NSString *)bundleResourcesPathForFolderName:(NSString *)folderName
 {
   return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:folderName];
+}
+
+- (NSString *)bundleResourcesPathForFrameworkName:(NSString *)frameworkName
+{
+  return [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:frameworkName] stringByAppendingPathComponent:@"Resources"];
 }
 
 - (void)addLuaPackagePathForBundlePath:(NSString *)bundlePath subdirectory:(NSString *)subdirectory
@@ -74,9 +79,9 @@
   lua_executable_dir("./lua");
   L = lua_open();
   luaL_openlibs(L);
-
+  
   [self addLuaPackagePathForBundlePath:[[NSBundle mainBundle] resourcePath] subdirectory:nil];
-  NSString *frameworkResourcesPath = [self bundleResourcesPathFolderName:@"lua"];
+  NSString *frameworkResourcesPath = [self bundleResourcesPathForFrameworkName:@"Torch.framework"];
   [self addLuaPackagePathForBundlePath:frameworkResourcesPath subdirectory:nil];
 
   // load Torch
@@ -103,7 +108,7 @@
 
 - (void)runMain:(NSString *)fileName inFolder:(NSString *)folderName
 {
-  NSString *mainFolder = [self bundleResourcesPathFolderName:folderName];
+  NSString *mainFolder = [self bundleResourcesPathForFolderName:folderName];
   [self addLuaPackagePathForBundlePath:mainFolder subdirectory:nil];
   [self require:fileName inFolder:folderName];
 }
