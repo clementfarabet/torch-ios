@@ -11,10 +11,14 @@ Torch7 for iOS (iPad/iPhone) for all architectures (armv7, armv7a, arm64, i386 (
 
 Requirements
 ============
+
 Torch7 needs to be installed prior to building the iOS
 version. 'torch' needs to be available in the user's path.
 
-Installation
+I recommend doing the easy install if you have not installed Torch7.
+http://torch.ch/docs/getting-started.html
+
+Building The Framework
 ============
 Simply run:
 $ ./generate_ios_framework
@@ -24,9 +28,12 @@ in a single dir: framework/. The dir is ready to be included in
 an iOS project: it includes an example class to load Torch from within
 your Objective C project.
 
+For examples full examples that utilize this class (Torch.m) please see 
+the ios_examples/ folder. More examples to come soon.
+
 Running
 =======
-In your XCode/iOS code (Objective C), simply import the class
-Torch.m/.h; include all the libs to the linker; and finally
-add all the Lua files as resources. All you have left to do
-is to define a main.lua file to keep going...
+When creating your Objective-C project simply import the class
+Torch.m/.h; include all the libs to the linker; add Torch.framework & Accelrate.framework
+and add all the Lua files as resources. define YOUR_FILE.lua and add it as 
+a resource. Run YOUR_FILE.lua using the method defined in Torch.h/.m

@@ -6,9 +6,9 @@
 
 @implementation Torch
 
-- (NSString *)bundleResourcesPathForFrameworkName:(NSString *)frameworkName
+- (NSString *)bundleResourcesPathFolderName:(NSString *)folderName
 {
-  return [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:frameworkName] stringByAppendingPathComponent:@"Resources"];
+  return [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:folderName];
 }
 
 - (void)addLuaPackagePathForBundlePath:(NSString *)bundlePath subdirectory:(NSString *)subdirectory
@@ -59,12 +59,13 @@
   }
 }
 
-- (void)require:(NSString *)file
+- (void)require:(NSString *)file inFolder:(NSString *)folderName
 {
-    int ret = luaL_dofile(L, [[[NSBundle mainBundle] pathForResource:file ofType:@"lua"] UTF8String]);
-    if (ret == 1) {
-        NSLog(@"could not load invalid lua resource: %@\n", file);
-    }
+  NSString *path = [[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:folderName]stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.lua",file]];
+  int ret = luaL_dofile(L, [path UTF8String]);
+  if (ret == 1) {
+    NSLog(@"could not load invalid lua resource: %@\n", file);
+  }
 }
 
 - (void)initialize
@@ -75,7 +76,7 @@
   luaL_openlibs(L);
 
   [self addLuaPackagePathForBundlePath:[[NSBundle mainBundle] resourcePath] subdirectory:nil];
-  NSString *frameworkResourcesPath = [self bundleResourcesPathForFrameworkName:@"Torch.framework"];
+  NSString *frameworkResourcesPath = [self bundleResourcesPathFolderName:@"lua"];
   [self addLuaPackagePathForBundlePath:frameworkResourcesPath subdirectory:nil];
 
   // load Torch
@@ -97,11 +98,19 @@
   luaopen_libimage(L);
   [self requireFrameworkPackage:@"image" frameworkResourcesPath:frameworkResourcesPath];
 
-  // run user code
-  [self require:@"main"];
-    
-  // done
   return;
+}
+
+- (void)runMain:(NSString *)fileName inFolder:(NSString *)folderName
+{
+  NSString *mainFolder = [self bundleResourcesPathFolderName:folderName];
+  [self addLuaPackagePathForBundlePath:mainFolder subdirectory:nil];
+  [self require:fileName inFolder:folderName];
+}
+
+- (lua_State *)getLuaState
+{
+  return L;
 }
 
 @end

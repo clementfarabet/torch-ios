@@ -20,7 +20,8 @@ int luaopen_libimage(lua_State *L);
     lua_State *L;
 }
 
-- (void)require:(NSString *)file;
 - (void)initialize;
+- (void)runMain:(NSString *)fileName inFolder:(NSString *)folderName;
+- (lua_State *)getLuaState;
 
 @end
