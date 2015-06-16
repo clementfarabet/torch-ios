@@ -16,9 +16,9 @@
 		3C6963B61B2A5C6300E39843 /* XOR_ExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963B51B2A5C6300E39843 /* XOR_ExampleTests.m */; };
 		3C6963C31B2A5CD000E39843 /* Torch.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963C21B2A5CD000E39843 /* Torch.m */; };
 		3C6963C51B2A5CE000E39843 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C6963C41B2A5CE000E39843 /* Accelerate.framework */; };
-		3C6963C71B2A5D1300E39843 /* lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C61B2A5D1300E39843 /* lua */; };
 		3C6963C91B2A5E6100E39843 /* xor_lua in Resources */ = {isa = PBXBuildFile; fileRef = 3C6963C81B2A5E6100E39843 /* xor_lua */; };
 		3C6963CC1B2F7D0000E39843 /* XORClassifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */; };
+		3C6963CD1B30AE9000E39843 /* Torch.framework in Resources */ = {isa = PBXBuildFile; fileRef = F9489EC21B2F8E6B003102F4 /* Torch.framework */; };
 		F9489EC31B2F8E6B003102F4 /* Torch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9489EC21B2F8E6B003102F4 /* Torch.framework */; };
 /* End PBXBuildFile section */
 
@@ -49,7 +49,6 @@
 		3C6963C11B2A5CD000E39843 /* Torch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Torch.h; path = ../../../framework/Torch.h; sourceTree = "<group>"; };
 		3C6963C21B2A5CD000E39843 /* Torch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Torch.m; path = ../../../framework/Torch.m; sourceTree = "<group>"; };
 		3C6963C41B2A5CE000E39843 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		3C6963C61B2A5D1300E39843 /* lua */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lua; path = ../../../framework/lua; sourceTree = "<group>"; };
 		3C6963C81B2A5E6100E39843 /* xor_lua */ = {isa = PBXFileReference; lastKnownFileType = folder; path = xor_lua; sourceTree = "<group>"; };
 		3C6963CA1B2F7D0000E39843 /* XORClassifyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XORClassifyObject.h; sourceTree = "<group>"; };
 		3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XORClassifyObject.m; sourceTree = "<group>"; };
@@ -108,7 +107,6 @@
 				3C6963CA1B2F7D0000E39843 /* XORClassifyObject.h */,
 				3C6963CB1B2F7D0000E39843 /* XORClassifyObject.m */,
 				3C6963C81B2A5E6100E39843 /* xor_lua */,
-				3C6963C61B2A5D1300E39843 /* lua */,
 				3C6963A31B2A5C6300E39843 /* Main.storyboard */,
 				3C6963A61B2A5C6300E39843 /* Images.xcassets */,
 				3C6963A81B2A5C6300E39843 /* LaunchScreen.xib */,
@@ -223,9 +221,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C6963CD1B30AE9000E39843 /* Torch.framework in Resources */,
 				3C6963A51B2A5C6300E39843 /* Main.storyboard in Resources */,
 				3C6963C91B2A5E6100E39843 /* xor_lua in Resources */,
-				3C6963C71B2A5D1300E39843 /* lua in Resources */,
 				3C6963AA1B2A5C6300E39843 /* LaunchScreen.xib in Resources */,
 				3C6963A71B2A5C6300E39843 /* Images.xcassets in Resources */,
 			);
