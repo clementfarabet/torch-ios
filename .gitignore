@@ -3,3 +3,9 @@ framework/include
 framework/lua
 framework/lib
 Torch.framework
+
+ios_examples/XOR_Example/XOR_Example.xcodeproj/xcuserdata/woffle_laptop.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
+
+ios_examples/XOR_Example/XOR_Example.xcodeproj/xcuserdata/woffle_laptop.xcuserdatad/xcschemes/XOR_Example.xcscheme
+
+ios_examples/XOR_Example/XOR_Example.xcodeproj/project.xcworkspace/xcuserdata/woffle_laptop.xcuserdatad/UserInterfaceState.xcuserstate
