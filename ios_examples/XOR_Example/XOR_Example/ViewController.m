@@ -8,6 +8,9 @@
 
 #import "ViewController.h"
 
+#define KBYTES_CLEAN_UP 10000 //10 Megabytes Max Storage Otherwise Force Cleanup (For This Example We Will Probably Never Reach It -- But Good Practice).
+#define LUAT_STACK_INDEX_FLOAT_TENSORS 4 //Index of Garbage Collection Stack Value
+
 @interface ViewController ()
 
 @end
@@ -64,12 +67,20 @@
 
 - (CGFloat)classifyExample:(XORClassifyObject *)obj inState:(lua_State *)L
 {
+  NSInteger garbage_size_kbytes = lua_gc(L, LUA_GCCOUNT, LUAT_STACK_INDEX_FLOAT_TENSORS);
+
+  if (garbage_size_kbytes >= KBYTES_CLEAN_UP)
+  {
+    NSLog(@"LUA -> Cleaning Up Garbage");
+    lua_gc(L, LUA_GCCOUNT, LUAT_STACK_INDEX_FLOAT_TENSORS);
+  }
+
+  THFloatStorage *classification_storage = THFloatStorage_newWithSize1(2);
+  THFloatTensor *classification = THFloatTensor_newWithStorage1d(classification_storage, 1, 2, 1);
+  THTensor_fastSet1d(classification, 0, obj.x);
+  THTensor_fastSet1d(classification, 1, obj.x);
   lua_getglobal(L,"classifyExample");
-  THFloatTensor classify = *THFloatTensor_new();
-  classify = *THFloatTensor_newWithStorage1d(classify.storage, 1, 2, 1);
-  THFloatTensor_set1d(&classify, 0, obj.x);
-  THFloatTensor_set1d(&classify, 1, obj.y);
-  luaT_pushudata(L, &classify, "torch.FloatTensor");
+  luaT_pushudata(L, classification, "torch.FloatTensor");
   
   //p_call -- args, results
   int res = lua_pcall(L, 1, 1, 0);

@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#include <Torch/Torch.h>
 #import "Torch.h"
+#include <Torch/Torch.h>
 #import "XORClassifyObject.h"
 
 @interface ViewController : UIViewController
