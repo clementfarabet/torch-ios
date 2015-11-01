@@ -72,7 +72,7 @@
   if (garbage_size_kbytes >= KBYTES_CLEAN_UP)
   {
     NSLog(@"LUA -> Cleaning Up Garbage");
-    lua_gc(L, LUA_GCCOUNT, LUAT_STACK_INDEX_FLOAT_TENSORS);
+    lua_gc(L, LUA_GCCOLLECT, LUAT_STACK_INDEX_FLOAT_TENSORS);
   }
 
   THFloatStorage *classification_storage = THFloatStorage_newWithSize1(2);
