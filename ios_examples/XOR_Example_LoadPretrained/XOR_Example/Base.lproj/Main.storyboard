@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2BC-0S-tFG">
+                                <rect key="frame" x="255" y="265" width="90" height="30"/>
+                                <state key="normal" title="Classify XOR">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="classifyAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mCe-L3-o3A"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Value 1" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6Ff-Xq-SNc">
+                                <rect key="frame" x="26" y="70" width="548" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Value 2" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f2b-u6-S3K">
+                                <rect key="frame" x="26" y="130" width="548" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ANSWER" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eno-Ek-13y">
+                                <rect key="frame" x="26" y="224" width="548" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="6Ff-Xq-SNc" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="50" id="7eO-7W-Q0i"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Eno-Ek-13y" secondAttribute="trailing" constant="10" id="H8Z-3o-jXl"/>
+                            <constraint firstItem="Eno-Ek-13y" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="10" id="Vbk-fe-5LO"/>
+                            <constraint firstItem="f2b-u6-S3K" firstAttribute="top" secondItem="6Ff-Xq-SNc" secondAttribute="bottom" constant="30" id="a9g-AU-XGf"/>
+                            <constraint firstItem="f2b-u6-S3K" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="10" id="e5z-cp-sA9"/>
+                            <constraint firstAttribute="centerX" secondItem="2BC-0S-tFG" secondAttribute="centerX" id="ifH-0f-J4i"/>
+                            <constraint firstItem="Eno-Ek-13y" firstAttribute="top" secondItem="f2b-u6-S3K" secondAttribute="bottom" constant="64" id="lMN-sF-htC"/>
+                            <constraint firstItem="6Ff-Xq-SNc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="10" id="nqO-vF-wA1"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="6Ff-Xq-SNc" secondAttribute="trailing" constant="10" id="vmP-wa-2Jh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="f2b-u6-S3K" secondAttribute="trailing" constant="10" id="zA5-uL-QYm"/>
+                            <constraint firstItem="2BC-0S-tFG" firstAttribute="top" secondItem="Eno-Ek-13y" secondAttribute="bottom" constant="20" id="zPy-18-yT7"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="answerLabel" destination="Eno-Ek-13y" id="Gi8-3P-kwe"/>
+                        <outlet property="valueOneTextfield" destination="6Ff-Xq-SNc" id="uYC-Mx-kSv"/>
+                        <outlet property="valueTwoTextField" destination="f2b-u6-S3K" id="LsZ-Pb-hXN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+    </scenes>
+</document>
