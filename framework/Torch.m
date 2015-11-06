@@ -113,6 +113,20 @@
   [self require:fileName inFolder:folderName];
 }
 
+- (void)loadFileWithName:(NSString *)filename inResourceFolder:(NSString *)folderName andLoadMethodName:(NSString *)methodName
+{
+    const char *filelocation_c_str = [[[self bundleResourcesPathForFolderName:folderName]stringByAppendingPathComponent:filename] cStringUsingEncoding:NSASCIIStringEncoding];
+    const char *method_name_c_str = [methodName cStringUsingEncoding:NSASCIIStringEncoding];
+    
+    lua_getglobal(L,method_name_c_str);
+    lua_pushstring(L,filelocation_c_str);
+    int res = lua_pcall(L, 1, 0, 0);
+    if (res != 0)
+    {
+        NSLog(@"error running function `f': %s",lua_tostring(L, -1));
+    }
+}
+
 - (lua_State *)getLuaState
 {
   return L;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BD3C6436-2DE0-495C-85EE-87F8B6662400</string>
+	<key>IDESourceControlProjectName</key>
+	<string>XOR_Example</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>CEEF26FC47C9B74CA1889A91073319A07D0890F5</key>
+		<string>https://github.com/woffle/torch-ios.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ios_examples/XOR_Example/XOR_Example.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>CEEF26FC47C9B74CA1889A91073319A07D0890F5</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/woffle/torch-ios.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>CEEF26FC47C9B74CA1889A91073319A07D0890F5</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CEEF26FC47C9B74CA1889A91073319A07D0890F5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>woffle_torch_ios</string>
+		</dict>
+	</array>
+</dict>
+</plist>
