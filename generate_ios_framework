@@ -5,7 +5,7 @@ XCODE_ROOT=`xcode-select -print-path`
 IPHONE_SDKVERSION=`xcodebuild -showsdks | grep iphoneos | egrep "[[:digit:]]+\.[[:digit:]]+" -o | tail -1`
 ARM_DEV_CMD="xcrun --sdk iphoneos"
 SIM_DEV_CMD="xcrun --sdk iphonesimulator"
-EXTRA_FLAGS="-miphoneos-version-min=6.0"
+EXTRA_FLAGS="-miphoneos-version-min=6.0 -fembed-bitcode"
 
 configure_exports() {
     if [[ $1 = arm* ]]; then
