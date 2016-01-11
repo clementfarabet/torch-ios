@@ -78,7 +78,7 @@
   THFloatStorage *classification_storage = THFloatStorage_newWithSize1(2);
   THFloatTensor *classification = THFloatTensor_newWithStorage1d(classification_storage, 1, 2, 1);
   THTensor_fastSet1d(classification, 0, obj.x);
-  THTensor_fastSet1d(classification, 1, obj.x);
+  THTensor_fastSet1d(classification, 1, obj.y);
   lua_getglobal(L,"classifyExample");
   luaT_pushudata(L, classification, "torch.FloatTensor");
   
